@@ -362,9 +362,19 @@
     border:1px solid #d9d8f7;color:var(--brand);border-radius:7px;padding:3px 9px;margin:3px 4px 3px 0}
   .vgrid{display:grid;gap:7px}
   @media(min-width:560px){.vgrid.c3{grid-template-columns:1fr 1fr 1fr}.vgrid.c2{grid-template-columns:1fr 1fr}}
-  .vcard{border:1px solid var(--line-soft);border-radius:10px;padding:11px 13px;background:#fbfbfd}
+  .vcard{border:1px solid var(--line-soft);border-radius:10px;padding:11px 13px;background:#fbfbfd;border-left:3px solid var(--cc,var(--line))}
   .vcard b{font-family:var(--f-display)}
+  .vcard .pos{font-family:var(--f-mono);font-size:11px;color:var(--cc,var(--ink-soft));margin-left:5px}
   .vcard .m{display:block;color:var(--ink-soft);font-size:13.5px;margin-top:2px}
+  .vsearch{width:100%;font-family:var(--f-body);font-size:16px;color:var(--ink);
+    border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;margin:12px 0 10px;background:#fff}
+  .vsearch:focus{outline:2px solid var(--brand);outline-offset:1px;border-color:var(--brand)}
+  .vfilter{display:flex;flex-wrap:wrap;gap:6px}
+  .vfilter .fc{font-family:var(--f-display);font-size:12.5px;font-weight:500;cursor:pointer;
+    border:1.5px solid var(--line);background:#fff;color:var(--ink-soft);border-radius:999px;padding:6px 12px;min-height:34px}
+  .vfilter .fc:hover{border-color:var(--brand)}
+  .vfilter .fc.on{background:var(--brand);border-color:var(--brand);color:#fff}
+  .vempty{color:var(--ink-soft);font-style:italic;padding:14px 2px}
 </style>
 </head>
 <body>
@@ -834,9 +844,80 @@
       </div>
     </details>
 
+    <div class="card" style="border-color:#d9d8f7">
+      <h3>🎓 TOEFL &amp; IELTS — Academic Word Bank</h3>
+      <p style="margin-top:2px">Bukan "semua kata" (itu ribuan & malah bikin nguap). Ini <b>kata akademik high-frequency</b> yang paling sering muncul di tes — yang bikin kamu mentok. Ketik buat cari, atau filter per kategori.</p>
+      <input id="vocabSearch" class="vsearch" type="search" placeholder="Cari kata atau arti… (mis. 'meningkat', 'significant')" aria-label="Cari kata akademik" />
+      <div class="vfilter" id="vocabCats"></div>
+      <div class="vgrid c2" id="vocabList" style="margin-top:10px"></div>
+      <p class="quiz-meta" id="vocabCount" style="margin-top:10px"></p>
+    </div>
+
+    <details class="acc" style="--c:var(--pos-adverb)">
+      <summary><span class="mk">08</span>Bahasa Tren &amp; Data — IELTS Writing Task 1<span class="ar">›</span></summary>
+      <div class="body">
+        <p>Task 1 = deskripsikan grafik/tabel. Rumusnya: <b>verb arah</b> + <b>adverb seberapa</b>.</p>
+        <h4>Verb arah</h4>
+        <table><thead><tr><th>Naik</th><th>Turun</th><th>Stabil/lain</th></tr></thead><tbody>
+          <tr><td>rise / increase</td><td>fall / decrease</td><td>remain stable</td></tr>
+          <tr><td>grow / climb</td><td>decline / drop</td><td>level off / plateau</td></tr>
+          <tr><td>soar / surge (tajam)</td><td>plummet / plunge (anjlok)</td><td>fluctuate (naik-turun)</td></tr>
+          <tr><td>peak at (puncak)</td><td>hit a low (titik terendah)</td><td>stand at (berada di)</td></tr>
+        </tbody></table>
+        <h4>Adverb / adjective "seberapa"</h4>
+        <p><span class="vchip">sharply / dramatically (tajam)</span><span class="vchip">significantly (signifikan)</span><span class="vchip">steadily (stabil/terus)</span><span class="vchip">gradually (perlahan)</span><span class="vchip">slightly / marginally (sedikit)</span><span class="vchip">rapidly (cepat)</span></p>
+        <blockquote><span class="ex">"Sales <b>rose sharply</b> from 2010 to 2015, then <b>leveled off</b>."</span> · <span class="ex">"The figure <b>fluctuated</b> before <b>plummeting</b> in 2020."</span></blockquote>
+      </div>
+    </details>
+
+    <details class="acc" style="--c:var(--pos-conjunction)">
+      <summary><span class="mk">09</span>Frasa Opini, Argumen &amp; Linker Akademik<span class="ar">›</span></summary>
+      <div class="body">
+        <h4>Menyatakan opini (Speaking & Writing)</h4>
+        <p><span class="ex">From my perspective… · It could be argued that… · There is no doubt that… · To a certain extent… · I'm inclined to think that…</span></p>
+        <h4>Sebab–Akibat</h4>
+        <table><thead><tr><th>Frasa</th><th>Arti</th></tr></thead><tbody>
+          <tr><td>as a result of / due to</td><td>akibat / karena</td></tr>
+          <tr><td>consequently / therefore</td><td>akibatnya / oleh karena itu</td></tr>
+          <tr><td>this leads to / gives rise to</td><td>ini menyebabkan</td></tr>
+          <tr><td>stems from</td><td>berakar dari</td></tr>
+        </tbody></table>
+        <h4>Bandingkan &amp; Kontras</h4>
+        <table><thead><tr><th>Frasa</th><th>Arti</th></tr></thead><tbody>
+          <tr><td>in contrast / on the other hand</td><td>sebaliknya</td></tr>
+          <tr><td>whereas / while</td><td>sedangkan</td></tr>
+          <tr><td>similarly / likewise</td><td>begitu pula</td></tr>
+          <tr><td>despite / in spite of</td><td>meskipun</td></tr>
+          <tr><td>nevertheless / nonetheless</td><td>meski demikian</td></tr>
+        </tbody></table>
+      </div>
+    </details>
+
+    <details class="acc" style="--c:var(--pos-pronoun)">
+      <summary><span class="mk">10</span>Paraphrasing — Skill Kunci TOEFL/IELTS<span class="ar">›</span></summary>
+      <div class="body">
+        <p>Tes menilai <b>seberapa kaya</b> kamu mengganti kata, bukan mengulang kata soal. Ganti kata umum dengan padanan akademik:</p>
+        <table><thead><tr><th>Umum</th><th>Versi akademik (paraphrase)</th></tr></thead><tbody>
+          <tr><td>big / a lot of</td><td>significant / substantial / considerable</td></tr>
+          <tr><td>important</td><td>crucial / essential / vital</td></tr>
+          <tr><td>good</td><td>beneficial / positive / favorable</td></tr>
+          <tr><td>bad</td><td>detrimental / adverse / negative</td></tr>
+          <tr><td>show</td><td>demonstrate / indicate / reveal</td></tr>
+          <tr><td>think</td><td>believe / argue / maintain</td></tr>
+          <tr><td>get / become</td><td>obtain / acquire / attain</td></tr>
+          <tr><td>problem</td><td>issue / challenge / drawback</td></tr>
+          <tr><td>idea</td><td>notion / concept / perspective</td></tr>
+          <tr><td>help</td><td>facilitate / contribute to / aid</td></tr>
+          <tr><td>cause</td><td>lead to / result in / trigger</td></tr>
+          <tr><td>a lot of people</td><td>a significant proportion / the majority</td></tr>
+        </tbody></table>
+        <blockquote>💡 Latihan: ambil 1 kalimat soal, tulis ulang ganti minimal 3 kata pakai padanan di atas. Itu inti skor tinggi Writing.</blockquote>
+      </div>
+    </details>
+
     <div class="card">
       <div class="quiz-head"><h3>Latihan: Pilih Kata yang Tepat</h3></div>
-      <p class="muted" style="margin:2px 0 0">Collocation, register, dan jebakan -ed/-ing.</p>
+      <p class="muted" style="margin:2px 0 0">Collocation, register, jebakan -ed/-ing, dan sinonim akademik.</p>
       <div id="quiz-vocab"></div>
     </div>
 
@@ -1252,7 +1333,83 @@ const Q_VOCAB = [
   {q:`Versi paling natural untuk "is always happens":`, opts:["is always happen","keeps happening","always is happening","happen always"], a:1, why:`<b>keeps happening</b> = natural & grammar benar (keep + V-ing untuk hal berulang).`},
   {q:`Interview: cara pro bilang "aku dapat kerja":`, opts:["I got a job","I take a job","I land a job","I make a job"], a:2, why:`<b>land a job</b> lebih kuat/profesional daripada "get a job". (get→land = upgrade).`},
   {q:`Ganti "very tired" dengan satu kata kuat:`, opts:["exhausted","sleepy","tiredness","resting"], a:0, why:`<b>exhausted</b> = sangat lelah. Daripada "very + kata", pakai satu kata kuat.`},
-  {q:`Phrasal verb untuk "memunculkan ide":`, opts:["come up with","come across","come down","come over"], a:0, why:`<b>come up with</b> = memunculkan ide. "She came up with a plan."`}
+  {q:`Phrasal verb untuk "memunculkan ide":`, opts:["come up with","come across","come down","come over"], a:0, why:`<b>come up with</b> = memunculkan ide. "She came up with a plan."`},
+  {q:`Paraphrase akademik untuk "important":`, opts:["crucial","nice","big","many"], a:0, why:`<b>crucial / essential / vital</b> = padanan akademik dari "important". Skill kunci IELTS/TOEFL.`},
+  {q:`IELTS Task 1 — "Sales ___ sharply" (naik tajam):`, opts:["fell","soared","plummeted","leveled off"], a:1, why:`<b>soared</b> = melonjak tajam (naik). plummet/fall = turun; level off = stabil.`},
+  {q:`Akademik untuk "show" (data menunjukkan):`, opts:["tell","say","indicate","talk"], a:2, why:`<b>indicate / demonstrate / reveal</b> = menunjukkan secara akademik. "The results indicate growth."`},
+  {q:`Paraphrase akademik untuk "bad effects":`, opts:["bad results","detrimental effects","good effects","big effects"], a:1, why:`<b>detrimental / adverse / negative</b> = padanan akademik dari "bad".`}
+];
+
+/* TOEFL/IELTS academic word bank — [word, pos, arti, contoh, kategori] */
+const VCAT = {
+  acad:["Akademik","var(--pos-noun)"],
+  trend:["Tren / Data","var(--pos-adverb)"],
+  verb:["Verb Akademik","var(--pos-verb)"],
+  adj:["Adjektiva","var(--pos-adjective)"]
+};
+const WORDS = [
+  ["analyze","v","menganalisis","analyze the data carefully","verb"],
+  ["assess","v","menilai/mengkaji","assess the risk","verb"],
+  ["evaluate","v","mengevaluasi","evaluate the results","verb"],
+  ["demonstrate","v","menunjukkan/membuktikan","the study demonstrates that…","verb"],
+  ["indicate","v","menunjukkan","the data indicate growth","verb"],
+  ["reveal","v","mengungkap","the survey reveals a trend","verb"],
+  ["establish","v","menetapkan/membangun","establish a framework","verb"],
+  ["obtain","v","memperoleh","obtain a qualification","verb"],
+  ["acquire","v","memperoleh/menguasai","acquire new skills","verb"],
+  ["enhance","v","meningkatkan","enhance performance","verb"],
+  ["facilitate","v","memudahkan","technology facilitates learning","verb"],
+  ["implement","v","menerapkan","implement a policy","verb"],
+  ["maintain","v","mempertahankan","maintain high standards","verb"],
+  ["contribute","v","berkontribusi","contribute to society","verb"],
+  ["emphasize","v","menekankan","emphasize the importance","verb"],
+  ["perceive","v","memandang/menganggap","perceived as a threat","verb"],
+  ["undergo","v","mengalami","undergo significant change","verb"],
+  ["sustain","v","menopang/mempertahankan","sustain economic growth","verb"],
+  ["restrict","v","membatasi","restrict access","verb"],
+  ["derive","v","memperoleh/berasal","derive benefits from","verb"],
+  ["significant","adj","signifikan/penting","a significant increase","adj"],
+  ["substantial","adj","besar/cukup banyak","a substantial amount","adj"],
+  ["crucial","adj","sangat penting","a crucial role","adj"],
+  ["essential","adj","esensial/wajib","essential information","adj"],
+  ["fundamental","adj","mendasar","a fundamental principle","adj"],
+  ["adequate","adj","memadai","adequate resources","adj"],
+  ["sufficient","adj","cukup","sufficient evidence","adj"],
+  ["beneficial","adj","bermanfaat","beneficial effects","adj"],
+  ["detrimental","adj","merugikan","detrimental to health","adj"],
+  ["inevitable","adj","tak terhindarkan","an inevitable outcome","adj"],
+  ["feasible","adj","layak/bisa dilakukan","a feasible solution","adj"],
+  ["prominent","adj","menonjol","a prominent figure","adj"],
+  ["diverse","adj","beragam","diverse perspectives","adj"],
+  ["relevant","adj","relevan","relevant evidence","adj"],
+  ["controversial","adj","kontroversial","a controversial issue","adj"],
+  ["widespread","adj","meluas","widespread adoption","adj"],
+  ["factor","n","faktor","a key factor","acad"],
+  ["impact","n","dampak","a major impact","acad"],
+  ["consequence","n","konsekuensi","serious consequences","acad"],
+  ["phenomenon","n","fenomena","a natural phenomenon","acad"],
+  ["hypothesis","n","hipotesis","test the hypothesis","acad"],
+  ["criteria","n","kriteria","meet the criteria","acad"],
+  ["notion","n","gagasan","the notion that…","acad"],
+  ["aspect","n","aspek","an important aspect","acad"],
+  ["framework","n","kerangka","a legal framework","acad"],
+  ["component","n","komponen","a key component","acad"],
+  ["approach","n","pendekatan","a new approach","acad"],
+  ["concept","n","konsep","an abstract concept","acad"],
+  ["potential","n","potensi","huge potential","acad"],
+  ["principle","n","prinsip","a guiding principle","acad"],
+  ["rise","v","naik/meningkat","a steady rise","trend"],
+  ["soar","v","melonjak (tajam)","prices soared","trend"],
+  ["surge","v","melonjak tajam","a surge in demand","trend"],
+  ["peak","v","mencapai puncak","peaked in 2020","trend"],
+  ["decline","v","menurun","a gradual decline","trend"],
+  ["plummet","v","anjlok","sales plummeted","trend"],
+  ["fluctuate","v","naik-turun","prices fluctuated","trend"],
+  ["plateau","v","mendatar/stabil","then plateaued","trend"],
+  ["dramatically","adv","secara drastis","rose dramatically","trend"],
+  ["steadily","adv","stabil/terus","grew steadily","trend"],
+  ["gradually","adv","perlahan","declined gradually","trend"],
+  ["slightly","adv","sedikit","increased slightly","trend"]
 ];
 
 const PHRASES = [
@@ -1495,6 +1652,45 @@ SENT_LESSONS.forEach((l,i)=>{
        </div>
        <table style="margin-top:8px"><thead><tr><th>Kamu pakai</th><th>Ganti</th><th>Kenapa</th></tr></thead><tbody>${whyRows}</tbody></table>`);
   });
+})();
+
+/* =================== ACADEMIC WORD BANK (search + filter) =================== */
+(function(){
+  const list=document.getElementById("vocabList");
+  const cats=document.getElementById("vocabCats");
+  const search=document.getElementById("vocabSearch");
+  const count=document.getElementById("vocabCount");
+  if(!list) return;
+  let activeCat="all", query="";
+
+  // category chips
+  const chipData=[["all","Semua","var(--brand)"],...Object.entries(VCAT).map(([k,v])=>[k,v[0],v[1]])];
+  chipData.forEach(([k,lab,col],i)=>{
+    const b=document.createElement("button");
+    b.className="fc"+(k==="all"?" on":""); b.textContent=lab; b.dataset.cat=k;
+    if(k!=="all") b.style.setProperty("--brand",col); // reuse on-color via inline? keep simple
+    b.onclick=()=>{ activeCat=k; cats.querySelectorAll(".fc").forEach(x=>x.classList.toggle("on",x===b)); paint(); };
+    cats.appendChild(b);
+  });
+
+  function paint(){
+    const q=query.trim().toLowerCase();
+    const rows=WORDS.filter(w=>{
+      const okCat = activeCat==="all" || w[4]===activeCat;
+      const okQ = !q || w[0].toLowerCase().includes(q) || w[2].toLowerCase().includes(q) || w[3].toLowerCase().includes(q);
+      return okCat && okQ;
+    });
+    if(!rows.length){ list.innerHTML=`<p class="vempty">Nggak ada hasil untuk "${query}". Coba kata lain.</p>`; }
+    else{
+      list.innerHTML=rows.map(w=>{
+        const col=VCAT[w[4]][1];
+        return `<div class="vcard" style="--cc:${col}"><b>${w[0]}</b><span class="pos">${w[1]}</span><span class="m">${w[2]} — <i>"${w[3]}"</i></span></div>`;
+      }).join("");
+    }
+    count.textContent=`${rows.length} dari ${WORDS.length} kata`;
+  }
+  search.addEventListener("input",e=>{ query=e.target.value; paint(); });
+  paint();
 })();
 
 /* =================== PHRASE LESSONS =================== */
