@@ -375,6 +375,29 @@
   .vfilter .fc:hover{border-color:var(--brand)}
   .vfilter .fc.on{background:var(--brand);border-color:var(--brand);color:#fff}
   .vempty{color:var(--ink-soft);font-style:italic;padding:14px 2px}
+  /* status feature */
+  .vbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .vsel{font-family:var(--f-display);font-size:13px;color:var(--ink);border:1.5px solid var(--line);
+    border-radius:9px;padding:8px 12px;background:#fff;min-height:38px;cursor:pointer}
+  .vsel:focus{outline:2px solid var(--brand);outline-offset:1px}
+  .vstats{font-family:var(--f-mono);font-size:12px;color:var(--ink-soft);margin:2px 0 0;display:flex;gap:12px;flex-wrap:wrap}
+  .vstats b{font-weight:700}
+  .vcard{position:relative;padding-right:84px}
+  .vcard .stbtn{position:absolute;top:9px;right:9px;font-family:var(--f-display);font-weight:600;font-size:11px;
+    border:1.5px solid var(--line);background:#fff;color:var(--ink-soft);border-radius:999px;
+    padding:4px 9px;cursor:pointer;min-height:30px;white-space:nowrap}
+  .vcard .stbtn:hover{border-color:var(--brand)}
+  .vcard.st-known{background:#eafaf0;--cc:var(--ok)!important}
+  .vcard.st-known .stbtn{border-color:var(--ok);color:#0c7a3a;background:#d6f5e2}
+  .vcard.st-learning{background:#fff7e8;--cc:#c47d05!important}
+  .vcard.st-learning .stbtn{border-color:#e0a92a;color:#a9700a;background:#fdeecb}
+  /* sub-index chips */
+  .vindex{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+  .vindex a{font-family:var(--f-display);font-size:12.5px;font-weight:500;text-decoration:none;
+    color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:999px;
+    padding:7px 12px;min-height:34px;display:inline-flex;align-items:center;gap:6px}
+  .vindex a:hover{border-color:var(--brand);color:var(--brand)}
+  .vindex a.star{background:var(--brand-soft);border-color:#d9d8f7;color:var(--brand);font-weight:600}
 </style>
 </head>
 <body>
@@ -666,7 +689,13 @@
     <h2 class="sec">Vocabulary</h2>
     <p class="sec-lead">Bukan kamus. Ini cara menaikkan level vocab dari "bisa ngomong" jadi "ngomongnya pas dan natural" — fokus presisi, collocations, dan kontrol register (kasual ↔ formal). Banyak contoh diambil langsung dari essay-mu.</p>
 
-    <div class="card">
+    <div class="card" style="background:linear-gradient(180deg,#fff,#fbfbfd)">
+      <h3>Isi Bagian Ini — Loncat Cepat</h3>
+      <p class="muted" style="margin:2px 0 0">Bagian ini panjang. Pakai daftar ini buat langsung ke yang kamu butuh:</p>
+      <div class="vindex" id="vindex"></div>
+    </div>
+
+    <div class="card" id="v-cara">
       <h3>Cara Belajar Vocab yang Benar</h3>
       <p style="margin-top:2px">Kalau caranya salah, sebanyak apa pun kata yang dihafal akan menguap. Tiga prinsip:</p>
       <ol style="padding-left:22px">
@@ -677,13 +706,13 @@
       <blockquote><b>Aturan emas:</b> <em>Don't learn words. Learn how words are used.</em></blockquote>
     </div>
 
-    <div class="card">
+    <div class="card" id="v-essay">
       <h3>Bedah Essay Kamu — Upgrade Kata per Kata</h3>
       <p class="muted" style="margin-top:2px">Kalimat asli dari essay-mu (kiri) vs versi upgrade (kanan). Bandingkan, rasakan bedanya.</p>
       <div id="essayBreakdown"></div>
     </div>
 
-    <details class="acc" open style="--c:var(--pos-conjunction)">
+    <details class="acc" id="v-colloc" style="--c:var(--pos-conjunction)">
       <summary><span class="mk">01</span>Collocations — Rahasia Kedengeran Natural<span class="ar">›</span></summary>
       <div class="body">
         <p><b>Collocation</b> = kata-kata yang "berjodoh" dan biasa muncul bersama. Salah pasangan = aneh walau grammar benar.</p>
@@ -716,7 +745,7 @@
       </div>
     </details>
 
-    <details class="acc" style="--c:var(--pos-adverb)">
+    <details class="acc" id="v-upgrade" style="--c:var(--pos-adverb)">
       <summary><span class="mk">02</span>Buang Kata Lemah, Ganti yang Presisi<span class="ar">›</span></summary>
       <div class="body">
         <h4>"GOOD" — kata paling membosankan</h4>
@@ -742,7 +771,7 @@
       </div>
     </details>
 
-    <details class="acc" style="--c:var(--pos-noun)">
+    <details class="acc" id="v-family" style="--c:var(--pos-noun)">
       <summary><span class="mk">03</span>Word Families &amp; jebakan -ed / -ing<span class="ar">›</span></summary>
       <div class="body">
         <p>Satu akar kata → banyak bentuk. Belajar satu keluarga = 4 kata sekaligus. (Nyambung ke materi sufiks di Bagian 01.)</p>
@@ -763,7 +792,7 @@
       </div>
     </details>
 
-    <details class="acc" style="--c:var(--pos-pronoun)">
+    <details class="acc" id="v-topik" style="--c:var(--pos-pronoun)">
       <summary><span class="mk">04</span>Vocab per Topik<span class="ar">›</span></summary>
       <div class="body">
         <h4>Perasaan &amp; Opini</h4>
@@ -790,7 +819,7 @@
       </div>
     </details>
 
-    <details class="acc" style="--c:var(--pos-preposition)">
+    <details class="acc" id="v-phrasal" style="--c:var(--pos-preposition)">
       <summary><span class="mk">05</span>Phrasal Verbs<span class="ar">›</span></summary>
       <div class="body">
         <p>Verb + preposisi yang artinya berubah. Native pakai ini terus; tanpanya bahasamu terasa kaku.</p>
@@ -808,7 +837,7 @@
       </div>
     </details>
 
-    <details class="acc" style="--c:var(--pos-determiner)">
+    <details class="acc" id="v-linking" style="--c:var(--pos-determiner)">
       <summary><span class="mk">06</span>Linking Words — biar nggak run-on<span class="ar">›</span></summary>
       <div class="body">
         <p>Ini langsung memperbaiki <b>run-on sentence</b> (kalimat nyambung terus tanpa jeda — kelihatan di Topik 1 essay-mu). Linking words memberi struktur.</p>
@@ -828,7 +857,7 @@
       </div>
     </details>
 
-    <details class="acc" style="--c:var(--pos-interjection)">
+    <details class="acc" id="v-idiom" style="--c:var(--pos-interjection)">
       <summary><span class="mk">07</span>Idiom &amp; Ungkapan Natural<span class="ar">›</span></summary>
       <div class="body">
         <table><thead><tr><th>Idiom</th><th>Arti</th></tr></thead><tbody>
@@ -844,16 +873,20 @@
       </div>
     </details>
 
-    <div class="card" style="border-color:#d9d8f7">
+    <div class="card" id="v-bank" style="border-color:#d9d8f7">
       <h3>🎓 TOEFL &amp; IELTS — Academic Word Bank</h3>
-      <p style="margin-top:2px">Bukan "semua kata" (itu ribuan & malah bikin nguap). Ini <b>kata akademik high-frequency</b> yang paling sering muncul di tes — yang bikin kamu mentok. Ketik buat cari, atau filter per kategori.</p>
-      <input id="vocabSearch" class="vsearch" type="search" placeholder="Cari kata atau arti… (mis. 'meningkat', 'significant')" aria-label="Cari kata akademik" />
-      <div class="vfilter" id="vocabCats"></div>
-      <div class="vgrid c2" id="vocabList" style="margin-top:10px"></div>
+      <p style="margin-top:2px"><b>Kata akademik high-frequency</b> yang sering bikin mentok di tes. Tiap kata bisa kamu tandai <b>Tahu / Lagi belajar / Belum</b> (tersimpan otomatis di browser) — lalu filter <b>"Belum"</b> biar cuma muncul yang belum kamu kuasai.</p>
+      <input id="vocabSearch" class="vsearch" type="search" placeholder="Cari kata atau arti… (mis. 'mengurangi', 'ambiguous')" aria-label="Cari kata akademik" />
+      <div class="vbar">
+        <div class="vfilter" id="vocabStatus" role="group" aria-label="Filter status hafalan"></div>
+        <select id="vocabCat" class="vsel" aria-label="Filter kategori"></select>
+      </div>
+      <p class="vstats" id="vocabStats"></p>
+      <div class="vgrid c2" id="vocabList" style="margin-top:6px"></div>
       <p class="quiz-meta" id="vocabCount" style="margin-top:10px"></p>
     </div>
 
-    <details class="acc" style="--c:var(--pos-adverb)">
+    <details class="acc" id="v-trend" style="--c:var(--pos-adverb)">
       <summary><span class="mk">08</span>Bahasa Tren &amp; Data — IELTS Writing Task 1<span class="ar">›</span></summary>
       <div class="body">
         <p>Task 1 = deskripsikan grafik/tabel. Rumusnya: <b>verb arah</b> + <b>adverb seberapa</b>.</p>
@@ -870,7 +903,7 @@
       </div>
     </details>
 
-    <details class="acc" style="--c:var(--pos-conjunction)">
+    <details class="acc" id="v-opini" style="--c:var(--pos-conjunction)">
       <summary><span class="mk">09</span>Frasa Opini, Argumen &amp; Linker Akademik<span class="ar">›</span></summary>
       <div class="body">
         <h4>Menyatakan opini (Speaking & Writing)</h4>
@@ -893,7 +926,7 @@
       </div>
     </details>
 
-    <details class="acc" style="--c:var(--pos-pronoun)">
+    <details class="acc" id="v-para" style="--c:var(--pos-pronoun)">
       <summary><span class="mk">10</span>Paraphrasing — Skill Kunci TOEFL/IELTS<span class="ar">›</span></summary>
       <div class="body">
         <p>Tes menilai <b>seberapa kaya</b> kamu mengganti kata, bukan mengulang kata soal. Ganti kata umum dengan padanan akademik:</p>
@@ -915,7 +948,7 @@
       </div>
     </details>
 
-    <div class="card">
+    <div class="card" id="v-quiz">
       <div class="quiz-head"><h3>Latihan: Pilih Kata yang Tepat</h3></div>
       <p class="muted" style="margin:2px 0 0">Collocation, register, jebakan -ed/-ing, dan sinonim akademik.</p>
       <div id="quiz-vocab"></div>
@@ -1345,7 +1378,8 @@ const VCAT = {
   acad:["Akademik","var(--pos-noun)"],
   trend:["Tren / Data","var(--pos-adverb)"],
   verb:["Verb Akademik","var(--pos-verb)"],
-  adj:["Adjektiva","var(--pos-adjective)"]
+  adj:["Adjektiva","var(--pos-adjective)"],
+  lanjut:["Lanjutan / Sulit","var(--pos-pronoun)"]
 };
 const WORDS = [
   ["analyze","v","menganalisis","analyze the data carefully","verb"],
@@ -1409,7 +1443,77 @@ const WORDS = [
   ["dramatically","adv","secara drastis","rose dramatically","trend"],
   ["steadily","adv","stabil/terus","grew steadily","trend"],
   ["gradually","adv","perlahan","declined gradually","trend"],
-  ["slightly","adv","sedikit","increased slightly","trend"]
+  ["slightly","adv","sedikit","increased slightly","trend"],
+  ["mitigate","v","mengurangi (dampak)","mitigate the risk","lanjut"],
+  ["alleviate","v","meringankan","alleviate poverty","lanjut"],
+  ["exacerbate","v","memperburuk","exacerbate the problem","lanjut"],
+  ["undermine","v","melemahkan","undermine trust","lanjut"],
+  ["foster","v","memupuk/mendorong","foster creativity","lanjut"],
+  ["hinder","v","menghambat","hinder progress","lanjut"],
+  ["impede","v","menghalangi","impede growth","lanjut"],
+  ["attain","v","mencapai","attain a goal","lanjut"],
+  ["deteriorate","v","memburuk","conditions deteriorated","lanjut"],
+  ["comprise","v","terdiri dari","comprises five parts","lanjut"],
+  ["advocate","v","menganjurkan/mendukung","advocate reform","lanjut"],
+  ["allocate","v","mengalokasikan","allocate resources","lanjut"],
+  ["discern","v","membedakan/melihat","discern a pattern","lanjut"],
+  ["elicit","v","memancing/memperoleh","elicit a response","lanjut"],
+  ["infer","v","menyimpulkan","infer meaning","lanjut"],
+  ["refute","v","membantah","refute a claim","lanjut"],
+  ["reinforce","v","memperkuat","reinforce the idea","lanjut"],
+  ["attribute","v","mengaitkan dengan","attribute success to…","lanjut"],
+  ["augment","v","menambah","augment income","lanjut"],
+  ["curtail","v","memangkas/membatasi","curtail spending","lanjut"],
+  ["scrutinize","v","meneliti dengan cermat","scrutinize the data","lanjut"],
+  ["depict","v","menggambarkan","depict reality","lanjut"],
+  ["exemplify","v","mencontohkan","exemplify the trend","lanjut"],
+  ["yield","v","menghasilkan","yield results","lanjut"],
+  ["compile","v","menyusun/menghimpun","compile a report","lanjut"],
+  ["coincide","v","bersamaan/cocok","coincide with","lanjut"],
+  ["deduce","v","menyimpulkan","deduce from evidence","lanjut"],
+  ["ambiguous","adj","ambigu/taksa","an ambiguous answer","lanjut"],
+  ["arbitrary","adj","sewenang-wenang/acak","an arbitrary decision","lanjut"],
+  ["coherent","adj","runtut/koheren","a coherent argument","lanjut"],
+  ["plausible","adj","masuk akal","a plausible explanation","lanjut"],
+  ["redundant","adj","berlebihan/mubazir","redundant information","lanjut"],
+  ["meticulous","adj","sangat teliti","meticulous planning","lanjut"],
+  ["ubiquitous","adj","ada di mana-mana","ubiquitous technology","lanjut"],
+  ["paramount","adj","terpenting/utama","of paramount importance","lanjut"],
+  ["profound","adj","mendalam","a profound impact","lanjut"],
+  ["subtle","adj","halus/samar","a subtle difference","lanjut"],
+  ["viable","adj","layak/bisa jalan","a viable option","lanjut"],
+  ["intricate","adj","rumit","an intricate system","lanjut"],
+  ["prevalent","adj","lazim/umum","a prevalent belief","lanjut"],
+  ["negligible","adj","bisa diabaikan","a negligible amount","lanjut"],
+  ["concise","adj","ringkas","a concise summary","lanjut"],
+  ["comprehensive","adj","menyeluruh","a comprehensive review","lanjut"],
+  ["explicit","adj","eksplisit/jelas","explicit instructions","lanjut"],
+  ["implicit","adj","tersirat","an implicit assumption","lanjut"],
+  ["inherent","adj","melekat/bawaan","an inherent flaw","lanjut"],
+  ["rigorous","adj","ketat/teliti","rigorous testing","lanjut"],
+  ["ample","adj","banyak/cukup","ample evidence","lanjut"],
+  ["scarce","adj","langka","scarce resources","lanjut"],
+  ["abundant","adj","melimpah","abundant resources","lanjut"],
+  ["volatile","adj","mudah berubah/labil","a volatile market","lanjut"],
+  ["tentative","adj","sementara/ragu","a tentative plan","lanjut"],
+  ["paradigm","n","paradigma","a new paradigm","lanjut"],
+  ["consensus","n","konsensus/kesepakatan","reach a consensus","lanjut"],
+  ["discrepancy","n","ketidaksesuaian","a discrepancy in data","lanjut"],
+  ["paradox","n","paradoks","an apparent paradox","lanjut"],
+  ["premise","n","premis/dasar","a false premise","lanjut"],
+  ["rationale","n","alasan/dasar pemikiran","the rationale behind it","lanjut"],
+  ["scope","n","cakupan","beyond the scope","lanjut"],
+  ["threshold","n","ambang batas","a pain threshold","lanjut"],
+  ["bias","n","bias/kecondongan","selection bias","lanjut"],
+  ["incentive","n","insentif/dorongan","a financial incentive","lanjut"],
+  ["correlation","n","korelasi","a strong correlation","lanjut"],
+  ["anomaly","n","anomali/penyimpangan","a statistical anomaly","lanjut"],
+  ["constraint","n","kendala/batasan","time constraints","lanjut"],
+  ["implication","n","implikasi","serious implications","lanjut"],
+  ["magnitude","n","besaran/skala","the magnitude of it","lanjut"],
+  ["validity","n","keabsahan","the validity of the test","lanjut"],
+  ["spectrum","n","spektrum/rentang","a broad spectrum","lanjut"],
+  ["hierarchy","n","hierarki","a social hierarchy","lanjut"]
 ];
 
 const PHRASES = [
@@ -1654,43 +1758,118 @@ SENT_LESSONS.forEach((l,i)=>{
   });
 })();
 
-/* =================== ACADEMIC WORD BANK (search + filter) =================== */
+/* =================== ACADEMIC WORD BANK (search + status + filter) =================== */
 (function(){
   const list=document.getElementById("vocabList");
-  const cats=document.getElementById("vocabCats");
+  const statusWrap=document.getElementById("vocabStatus");
+  const catSel=document.getElementById("vocabCat");
   const search=document.getElementById("vocabSearch");
   const count=document.getElementById("vocabCount");
+  const statsEl=document.getElementById("vocabStats");
   if(!list) return;
-  let activeCat="all", query="";
 
-  // category chips
-  const chipData=[["all","Semua","var(--brand)"],...Object.entries(VCAT).map(([k,v])=>[k,v[0],v[1]])];
-  chipData.forEach(([k,lab,col],i)=>{
+  // persistent word status: ""(belum) | "learning" | "known"
+  const SKEY="parser_vocab_status";
+  const getStatus=()=>{ try{return JSON.parse(localStorage.getItem(SKEY)||"{}")}catch(e){return {}} };
+  let status=getStatus();
+  const saveStatus=()=>localStorage.setItem(SKEY,JSON.stringify(status));
+  const ST_ORDER={"":"learning","learning":"known","known":""};
+  const ST_LABEL={"":"+ Tandai","learning":"Lagi belajar","known":"✓ Tahu"};
+
+  let activeStatus="all", activeCat="all", query="";
+
+  // status filter chips (primary)
+  [["all","Semua"],["","Belum"],["learning","Lagi belajar"],["known","Tahu"]].forEach(([k,lab],i)=>{
     const b=document.createElement("button");
-    b.className="fc"+(k==="all"?" on":""); b.textContent=lab; b.dataset.cat=k;
-    if(k!=="all") b.style.setProperty("--brand",col); // reuse on-color via inline? keep simple
-    b.onclick=()=>{ activeCat=k; cats.querySelectorAll(".fc").forEach(x=>x.classList.toggle("on",x===b)); paint(); };
-    cats.appendChild(b);
+    b.className="fc"+(k==="all"?" on":""); b.dataset.st=k; b.textContent=lab;
+    b.onclick=()=>{ activeStatus=k; statusWrap.querySelectorAll(".fc").forEach(x=>x.classList.toggle("on",x===b)); paint(); };
+    statusWrap.appendChild(b);
   });
+  // category select (secondary, compact)
+  catSel.innerHTML=`<option value="all">Semua kategori</option>`+
+    Object.entries(VCAT).map(([k,v])=>`<option value="${k}">${v[0]}</option>`).join("");
+  catSel.onchange=()=>{ activeCat=catSel.value; paint(); };
+
+  function statusOf(word){ return status[word]||""; }
+  function stats(){
+    let known=0,learning=0;
+    WORDS.forEach(w=>{ const s=statusOf(w[0]); if(s==="known")known++; else if(s==="learning")learning++; });
+    const belum=WORDS.length-known-learning;
+    statsEl.innerHTML=`<span>Belum <b>${belum}</b></span><span style="color:#a9700a">Lagi belajar <b>${learning}</b></span><span style="color:#0c7a3a">Tahu <b>${known}</b></span>`;
+  }
 
   function paint(){
     const q=query.trim().toLowerCase();
     const rows=WORDS.filter(w=>{
       const okCat = activeCat==="all" || w[4]===activeCat;
+      const okSt = activeStatus==="all" || statusOf(w[0])===activeStatus;
       const okQ = !q || w[0].toLowerCase().includes(q) || w[2].toLowerCase().includes(q) || w[3].toLowerCase().includes(q);
-      return okCat && okQ;
+      return okCat && okSt && okQ;
     });
-    if(!rows.length){ list.innerHTML=`<p class="vempty">Nggak ada hasil untuk "${query}". Coba kata lain.</p>`; }
+    if(!rows.length){ list.innerHTML=`<p class="vempty">Nggak ada hasil. Coba ganti filter atau kata kunci.</p>`; }
     else{
       list.innerHTML=rows.map(w=>{
-        const col=VCAT[w[4]][1];
-        return `<div class="vcard" style="--cc:${col}"><b>${w[0]}</b><span class="pos">${w[1]}</span><span class="m">${w[2]} — <i>"${w[3]}"</i></span></div>`;
+        const col=VCAT[w[4]][1], s=statusOf(w[0]);
+        const cls = s==="known"?"st-known":s==="learning"?"st-learning":"";
+        return `<div class="vcard ${cls}" style="--cc:${col}" data-w="${w[0]}">
+          <button class="stbtn" data-w="${w[0]}" title="Klik: ganti status (Belum → Lagi belajar → Tahu)">${ST_LABEL[s]}</button>
+          <b>${w[0]}</b><span class="pos">${w[1]}</span><span class="m">${w[2]} — <i>"${w[3]}"</i></span></div>`;
       }).join("");
     }
     count.textContent=`${rows.length} dari ${WORDS.length} kata`;
+    stats();
   }
+
+  // event delegation for status buttons — update in place (no full repaint)
+  list.addEventListener("click",e=>{
+    const btn=e.target.closest(".stbtn"); if(!btn) return;
+    const w=btn.dataset.w;
+    const next=ST_ORDER[statusOf(w)];
+    if(next) status[w]=next; else delete status[w];
+    saveStatus();
+    const card=btn.closest(".vcard"), s=statusOf(w);
+    if(activeStatus!=="all" && s!==activeStatus){
+      card.remove();                     // no longer matches active status filter
+      const remaining=list.querySelectorAll(".vcard").length;
+      count.textContent=`${remaining} dari ${WORDS.length} kata`;
+      if(!remaining) list.innerHTML=`<p class="vempty">Semua di filter ini sudah kamu tandai. 🎉</p>`;
+    } else {
+      card.className="vcard "+(s==="known"?"st-known":s==="learning"?"st-learning":"");
+      btn.textContent=ST_LABEL[s];
+    }
+    stats();
+  });
+
   search.addEventListener("input",e=>{ query=e.target.value; paint(); });
   paint();
+})();
+
+/* =================== VOCAB SUB-INDEX (jump + open) =================== */
+(function(){
+  const wrap=document.getElementById("vindex"); if(!wrap) return;
+  const items=[
+    ["v-bank","🎓 Word Bank TOEFL/IELTS",1],
+    ["v-essay","Bedah Essay-mu",0],
+    ["v-cara","Cara Belajar",0],
+    ["v-colloc","Collocations",0],
+    ["v-upgrade","Upgrade Kata Lemah",0],
+    ["v-family","Word Families & -ed/-ing",0],
+    ["v-topik","Vocab per Topik",0],
+    ["v-phrasal","Phrasal Verbs",0],
+    ["v-linking","Linking Words",0],
+    ["v-idiom","Idiom",0],
+    ["v-trend","Tren & Data (Task 1)",0],
+    ["v-opini","Opini & Linker",0],
+    ["v-para","Paraphrasing",0],
+    ["v-quiz","Latihan",0]
+  ];
+  wrap.innerHTML=items.map(([id,lab,star])=>`<a href="#${id}"${star?' class="star"':''}>${lab}</a>`).join("");
+  wrap.querySelectorAll("a").forEach(a=>{
+    a.addEventListener("click",()=>{
+      const t=document.getElementById(a.getAttribute("href").slice(1));
+      if(t && t.tagName==="DETAILS") t.open=true; // open accordion before jump
+    });
+  });
 })();
 
 /* =================== PHRASE LESSONS =================== */
