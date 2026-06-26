@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Parser — Belajar Tata Bahasa Inggris</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    /* UI */
+    --ink:#1b1d26;
+    --ink-soft:#52566a;
+    --paper:#e9ebf0;
+    --panel:#ffffff;
+    --line:#d3d7e0;
+    --line-soft:#e4e7ee;
+    --brand:#3531d4;
+    --brand-soft:#ecebfb;
+    --ok:#16a34a;
+    --bad:#dc2657;
+    /* Part-of-speech spectrum */
+    --pos-noun:#2563c9;
+    --pos-pronoun:#7c3aed;
+    --pos-verb:#dc2657;
+    --pos-adjective:#c47d05;
+    --pos-adverb:#e0561b;
+    --pos-preposition:#0d9488;
+    --pos-conjunction:#15a34a;
+    --pos-interjection:#db2777;
+    --pos-determiner:#0883a8;
+    --pos-quantifier:#5f9c0d;
+
+    --f-display:"Space Grotesk",system-ui,sans-serif;
+    --f-body:"Newsreader",Georgia,serif;
+    --f-mono:"JetBrains Mono",ui-monospace,monospace;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(27,29,38,.06),0 10px 30px -12px rgba(27,29,38,.22);
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:78px}
+  body{
+    margin:0;
+    font-family:var(--f-body);
+    color:var(--ink);
+    background:var(--paper);
+    /* notebook ruling */
+    background-image:
+      linear-gradient(var(--line-soft) 1px,transparent 1px),
+      linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);
+    background-size:100% 28px,28px 100%;
+    background-position:0 -1px,-1px 0;
+    line-height:1.6;
+    font-size:17px;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    html{scroll-behavior:auto}
+  }
+
+  /* ---------- Top nav ---------- */
+  header.top{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:saturate(140%) blur(8px);
+    background:rgba(233,235,240,.86);
+    border-bottom:1px solid var(--line);
+  }
+  .top-inner{
+    max-width:1120px;margin:0 auto;padding:12px 22px;
+    display:flex;align-items:center;gap:18px;
+  }
+  .brand{
+    font-family:var(--f-display);font-weight:700;font-size:19px;letter-spacing:-.02em;
+    display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);
+  }
+  .brand .dot{width:13px;height:13px;border-radius:3px;
+    background:conic-gradient(from 45deg,var(--pos-noun),var(--pos-verb),var(--pos-adjective),var(--pos-conjunction),var(--pos-noun));
+  }
+  .top nav{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+  .top nav a{
+    font-family:var(--f-display);font-size:13.5px;font-weight:500;
+    text-decoration:none;color:var(--ink-soft);padding:7px 11px;border-radius:8px;
+  }
+  .top nav a:hover{color:var(--ink);background:var(--panel)}
+  .progress-pill{
+    font-family:var(--f-mono);font-size:12px;font-weight:500;color:var(--brand);
+    background:var(--brand-soft);border:1px solid #d9d8f7;border-radius:999px;
+    padding:5px 11px;white-space:nowrap;
+  }
+
+  /* ---------- Layout ---------- */
+  main{max-width:1120px;margin:0 auto;padding:0 22px 100px}
+  section{scroll-margin-top:78px;padding:64px 0 10px}
+  .eyebrow{
+    font-family:var(--f-mono);font-size:12px;font-weight:500;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--brand);margin:0 0 10px;
+  }
+  h2.sec{
+    font-family:var(--f-display);font-weight:700;font-size:clamp(28px,4vw,42px);
+    letter-spacing:-.025em;line-height:1.05;margin:0 0 12px;
+  }
+  .sec-lead{font-size:18px;color:var(--ink-soft);max-width:62ch;margin:0 0 30px}
+  h3{font-family:var(--f-display);font-weight:600;font-size:21px;letter-spacing:-.01em;margin:0 0 6px}
+  h4{font-family:var(--f-display);font-weight:600;font-size:15px;letter-spacing:.01em;margin:20px 0 4px;color:var(--brand)}
+  .body ul,.body ol{margin:6px 0 6px;padding-left:22px}
+  .body li{margin:3px 0}
+  .body p{margin:.5em 0}
+
+  .card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:24px;margin-bottom:18px;
+  }
+  .grid{display:grid;gap:18px}
+  @media(min-width:720px){.grid.cols-2{grid-template-columns:1fr 1fr}}
+
+  table{border-collapse:collapse;width:100%;font-size:15.5px;margin:6px 0}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  th{font-family:var(--f-display);font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft)}
+  tr:last-child td{border-bottom:none}
+  code,.mono{font-family:var(--f-mono);font-size:.88em}
+  .formula{
+    font-family:var(--f-mono);font-size:14px;background:#f4f5f9;border:1px solid var(--line-soft);
+    border-radius:8px;padding:6px 11px;display:inline-block;color:var(--ink);
+  }
+  blockquote{
+    margin:14px 0;padding:12px 16px;border-left:3px solid var(--brand);
+    background:var(--brand-soft);border-radius:0 10px 10px 0;font-size:15.5px;color:#33324f;
+  }
+  blockquote.warn{border-left-color:var(--pos-verb);background:#fdeef2;color:#5b2030}
+  .muted{color:var(--ink-soft)}
+  .ex{font-style:italic}
+
+  /* ---------- POS color tokens ---------- */
+  .w{position:relative;cursor:pointer;font-style:normal;border-radius:4px;
+     padding:1px 3px;transition:background .12s;white-space:nowrap}
+  .w::after{content:"";position:absolute;left:3px;right:3px;bottom:-1px;height:2.5px;border-radius:2px;background:var(--c,#999)}
+  .w:hover,.w:focus-visible{background:color-mix(in srgb,var(--c) 14%,white);outline:none}
+  .w.pinned{background:color-mix(in srgb,var(--c) 20%,white)}
+  .pos-noun{--c:var(--pos-noun)} .pos-pronoun{--c:var(--pos-pronoun)}
+  .pos-verb{--c:var(--pos-verb)} .pos-adjective{--c:var(--pos-adjective)}
+  .pos-adverb{--c:var(--pos-adverb)} .pos-preposition{--c:var(--pos-preposition)}
+  .pos-conjunction{--c:var(--pos-conjunction)} .pos-interjection{--c:var(--pos-interjection)}
+  .pos-determiner{--c:var(--pos-determiner)} .pos-quantifier{--c:var(--pos-quantifier)}
+
+  .chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-display);
+    font-size:12.5px;font-weight:500;padding:4px 9px;border-radius:999px;
+    border:1px solid color-mix(in srgb,var(--c) 35%,white);color:var(--c);
+    background:color-mix(in srgb,var(--c) 9%,white);}
+  .chip .sw{width:9px;height:9px;border-radius:50%;background:var(--c)}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:54px 0 26px}
+  .hero h1{
+    font-family:var(--f-display);font-weight:700;letter-spacing:-.035em;line-height:1.0;
+    font-size:clamp(38px,7vw,76px);margin:14px 0 18px;
+  }
+  .hero h1 .accent{color:var(--brand)}
+  .hero p.kick{font-size:19px;color:var(--ink-soft);max-width:56ch;margin:0 0 30px}
+  .parser{
+    background:var(--panel);border:1px solid var(--line);border-radius:18px;
+    box-shadow:var(--shadow);padding:30px 26px 22px;margin-bottom:18px;
+  }
+  .parser .sent{font-size:clamp(24px,4.4vw,38px);font-family:var(--f-body);line-height:1.5;letter-spacing:-.01em}
+  .parser .hint{font-family:var(--f-mono);font-size:12.5px;color:var(--ink-soft);margin-top:18px}
+  .readout{
+    margin-top:16px;min-height:64px;border-top:1px dashed var(--line);padding-top:16px;
+    display:flex;gap:14px;align-items:flex-start;
+  }
+  .readout .badge{font-family:var(--f-display);font-weight:600;font-size:13px;color:#fff;
+    padding:5px 10px;border-radius:7px;background:var(--c,var(--brand));white-space:nowrap;flex:none}
+  .readout .desc{font-size:15.5px}
+  .readout .desc b{font-style:normal}
+  .readout.empty .desc{color:var(--ink-soft);font-style:italic}
+  .legend{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
+
+  .sentence-switch{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .btn{
+    font-family:var(--f-display);font-weight:500;font-size:14px;cursor:pointer;
+    border:1px solid var(--line);background:var(--panel);color:var(--ink);
+    padding:8px 14px;border-radius:9px;transition:all .12s;
+  }
+  .btn:hover{border-color:var(--brand);color:var(--brand)}
+  .btn.active{background:var(--brand);border-color:var(--brand);color:#fff}
+  .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+  .btn.primary:hover{background:#2a27b4;color:#fff}
+  .btn:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+
+  /* ---------- Quiz engine ---------- */
+  .quiz{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px}
+  .quiz-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+  .quiz-q{font-size:20px;margin:10px 0 4px;line-height:1.4}
+  .quiz-meta{font-family:var(--f-mono);font-size:12.5px;color:var(--ink-soft)}
+  .opts{display:grid;gap:9px;margin:16px 0 4px}
+  @media(min-width:560px){.opts.two{grid-template-columns:1fr 1fr}}
+  .opt{
+    text-align:left;font-family:var(--f-display);font-size:15px;cursor:pointer;
+    border:1.5px solid var(--line);background:#fbfbfd;color:var(--ink);
+    padding:12px 14px;border-radius:10px;transition:all .12s;display:flex;gap:10px;align-items:center;
+  }
+  .opt:hover:not(:disabled){border-color:var(--brand)}
+  .opt:disabled{cursor:default}
+  .opt.correct{border-color:var(--ok);background:#e9f9ef;color:#0c6b32}
+  .opt.wrong{border-color:var(--bad);background:#fdeef2;color:#8c1230}
+  .opt .key{font-family:var(--f-mono);font-size:12px;color:var(--ink-soft);border:1px solid var(--line);border-radius:5px;padding:1px 6px}
+  .opt:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+  .explain{margin-top:14px;font-size:15px;padding:12px 14px;border-radius:10px;background:#f4f5f9;border:1px solid var(--line-soft);display:none}
+  .explain.show{display:block}
+  .quiz-foot{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:12px;flex-wrap:wrap}
+  .bar{height:6px;background:var(--line-soft);border-radius:99px;overflow:hidden;flex:1;min-width:120px}
+  .bar > i{display:block;height:100%;background:var(--brand);width:0;transition:width .3s}
+
+  /* ---------- Tense grid ---------- */
+  .tense-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;overflow-x:auto}
+  @media(max-width:640px){.tense-grid{grid-template-columns:1fr;}}
+  .tcell{border:1px solid var(--line);border-radius:11px;padding:13px;background:#fbfbfd;cursor:pointer;transition:.12s}
+  .tcell:hover{border-color:var(--brand);background:#fff}
+  .tcell.head{background:var(--ink);color:#fff;cursor:default;font-family:var(--f-display);font-weight:600;text-align:center;display:flex;align-items:center;justify-content:center}
+  .tcell .nm{font-family:var(--f-display);font-weight:600;font-size:13.5px;margin-bottom:5px}
+  .tcell .form{font-family:var(--f-mono);font-size:11.5px;color:var(--brand);margin-bottom:6px}
+  .tcell .ex{font-style:italic;font-size:13.5px;color:var(--ink-soft)}
+
+  /* ---------- Flip cards ---------- */
+  .flips{display:grid;gap:14px}
+  @media(min-width:640px){.flips{grid-template-columns:1fr 1fr 1fr}}
+  .flip{perspective:1000px;height:140px;cursor:pointer}
+  .flip-in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+  .flip.on .flip-in{transform:rotateY(180deg)}
+  .flip-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:12px;border:1px solid var(--line);
+    padding:16px;display:flex;flex-direction:column;justify-content:center;gap:6px}
+  .flip-front{background:#fbfbfd}
+  .flip-back{background:var(--ink);color:#fff;transform:rotateY(180deg)}
+  .flip .tag{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+  .flip-front .tag{color:var(--pos-verb)} .flip-back .tag{color:#9ea3ff}
+  .flip .txt{font-size:16px;font-style:italic;line-height:1.4}
+  .flip small{font-family:var(--f-mono);font-size:11px;opacity:.7;font-style:normal}
+
+  /* ---------- matcher ---------- */
+  .match-row{display:grid;grid-template-columns:1fr;gap:10px}
+  .match-q{border:1px solid var(--line);border-radius:11px;padding:14px;background:#fbfbfd}
+  .match-q .s{font-style:italic;margin-bottom:9px;font-size:16px}
+  .match-opts{display:flex;gap:6px;flex-wrap:wrap}
+  .mbtn{font-family:var(--f-mono);font-size:12.5px;border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:6px 11px;cursor:pointer;transition:.12s}
+  .mbtn:hover{border-color:var(--brand)}
+  .mbtn.correct{border-color:var(--ok);background:#e9f9ef;color:#0c6b32}
+  .mbtn.wrong{border-color:var(--bad);background:#fdeef2;color:#8c1230}
+
+  footer{max-width:1120px;margin:0 auto;padding:40px 22px 60px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:15px}
+  footer b{color:var(--ink)}
+
+  .toc{display:grid;gap:10px;grid-template-columns:1fr}
+  @media(min-width:640px){.toc{grid-template-columns:repeat(5,1fr)}}
+  .toc a{text-decoration:none;color:var(--ink);background:var(--panel);border:1px solid var(--line);
+    border-radius:12px;padding:14px;display:block;box-shadow:var(--shadow);transition:.14s}
+  .toc a:hover{transform:translateY(-2px);border-color:var(--brand)}
+  .toc a .n{font-family:var(--f-mono);font-size:12px;color:var(--brand)}
+  .toc a .t{font-family:var(--f-display);font-weight:600;font-size:15px;display:block;margin-top:4px;letter-spacing:-.01em}
+
+  .lesson-nav{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:20px}
+  details.acc{border:1px solid var(--line);border-radius:12px;background:var(--panel);margin-bottom:12px;box-shadow:var(--shadow);overflow:hidden}
+  details.acc>summary{cursor:pointer;list-style:none;padding:16px 20px;font-family:var(--f-display);font-weight:600;font-size:17px;display:flex;align-items:center;gap:11px}
+  details.acc>summary::-webkit-details-marker{display:none}
+  details.acc>summary .mk{font-family:var(--f-mono);font-size:12px;color:#fff;background:var(--c,var(--brand));border-radius:6px;padding:3px 7px;flex:none}
+  details.acc>summary .ar{margin-left:auto;color:var(--ink-soft);transition:transform .2s}
+  details.acc[open]>summary .ar{transform:rotate(90deg)}
+  details.acc .body{padding:4px 20px 20px}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(120%);
+    background:var(--ink);color:#fff;padding:12px 20px;border-radius:11px;font-family:var(--f-display);
+    font-weight:500;font-size:14.5px;box-shadow:var(--shadow);z-index:99;transition:transform .35s;}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+  .skip{position:absolute;left:-999px}.skip:focus{left:12px;top:10px;z-index:99;background:#fff;padding:8px 12px;border-radius:8px;border:1px solid var(--brand)}
+
+  /* tap behaviour on touch devices */
+  a,button,summary,.w,.flip,.opt,.mbtn,.tcell,.btn{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+  .top nav a.active{color:var(--brand);background:var(--panel)}
+
+  /* ---------- Mobile bottom nav (≤720) ---------- */
+  .bottomnav{display:none}
+  @media(max-width:720px){
+    .bottomnav{
+      display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;
+      background:rgba(255,255,255,.94);backdrop-filter:saturate(140%) blur(10px);
+      border-top:1px solid var(--line);
+      padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+      justify-content:space-around;
+    }
+    .bottomnav a{
+      flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+      text-decoration:none;color:var(--ink-soft);font-family:var(--f-display);
+      font-size:10.5px;font-weight:500;padding:6px 2px;border-radius:10px;min-height:46px;justify-content:center;
+    }
+    .bottomnav a svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.9}
+    .bottomnav a.active{color:var(--brand);background:var(--brand-soft)}
+    /* free the top bar on mobile: drop inline section links */
+    .top nav{display:none}
+    .top-inner{padding:11px 16px;gap:10px}
+    .progress-pill{margin-left:auto}
+    main{padding-bottom:90px}        /* clearance for fixed bottom nav */
+    body{font-size:16px;background-size:100% 26px,26px 100%}
+  }
+
+  /* ---------- Responsive layout polish ---------- */
+  @media(max-width:720px){
+    main{padding-left:16px;padding-right:16px}
+    section{padding-top:46px}
+    .hero{padding-top:34px}
+    .card,.quiz{padding:18px}
+    .parser{padding:22px 16px 18px}
+    .readout{flex-direction:column;gap:9px}
+    .toc{grid-template-columns:repeat(2,1fr)}
+    .lesson-nav,.sentence-switch,.legend{gap:6px}
+    /* tables scroll horizontally instead of breaking layout */
+    .card table,.body table,.quiz table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .grid.cols-2{grid-template-columns:1fr}
+    details.acc>summary{padding:14px 16px;font-size:15.5px}
+    details.acc .body{padding:2px 16px 16px}
+    .tense-grid{grid-template-columns:1fr}
+    .tense-grid .tcell.head{display:none}  /* data cells already name the tense */
+    .opts.two{grid-template-columns:1fr}
+  }
+  @media(max-width:380px){
+    .toc{grid-template-columns:1fr}
+    .parser .sent{font-size:22px}
+  }
+  /* larger, comfier tap targets for parser tokens on touch */
+  @media(hover:none){
+    .w{padding:2px 4px}
+  }
+  /* touch-target floor: 44px on small screens (UX touch-target-size) */
+  @media(max-width:720px){
+    .btn{min-height:44px;display:inline-flex;align-items:center}
+    .mbtn{min-height:44px;display:inline-flex;align-items:center;padding:8px 14px}
+    .opt{min-height:44px}
+    .tcell .form{font-size:12px}
+  }
+</style>
+</head>
+<body>
+<a href="#part-of-speech" class="skip">Lewati ke materi</a>
+
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="#top"><span class="dot"></span>Parser</a>
+    <nav>
+      <a href="#part-of-speech">Part of Speech</a>
+      <a href="#struktur">Struktur</a>
+      <a href="#frasa">Frasa</a>
+      <a href="#klausa">Klausa</a>
+      <a href="#grammar">Grammar</a>
+    </nav>
+    <span class="progress-pill" id="progressPill">0 / 0 latihan</span>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" style="padding-top:54px">
+    <p class="eyebrow">Tata Bahasa Inggris · interaktif · dari nol</p>
+    <h1>Setiap kata punya <span class="accent">peran</span>.<br/>Klik untuk membongkarnya.</h1>
+    <p class="kick">Bukan sekadar dibaca — dibedah. Sorot kata mana pun, lihat fungsinya, lalu uji pemahamanmu dengan latihan di tiap bagian.</p>
+
+    <div class="parser">
+      <div class="sentence-switch" id="sentSwitch"></div>
+      <div class="sent" id="sentBox"></div>
+      <div class="legend" id="legend"></div>
+      <div class="readout empty" id="readout">
+        <span class="desc">Klik / ketuk sebuah kata di atas untuk melihat part of speech-nya.</span>
+      </div>
+      <div class="hint">tip: setiap warna = satu jenis kata. Pola yang sama dipakai di seluruh halaman.</div>
+    </div>
+  </section>
+
+  <!-- ============ TOC ============ -->
+  <section style="padding-top:18px">
+    <div class="toc">
+      <a href="#part-of-speech"><span class="n">01</span><span class="t">Part of Speech</span></a>
+      <a href="#struktur"><span class="n">02</span><span class="t">Struktur Kalimat</span></a>
+      <a href="#frasa"><span class="n">03</span><span class="t">Frasa</span></a>
+      <a href="#klausa"><span class="n">04</span><span class="t">Klausa</span></a>
+      <a href="#grammar"><span class="n">05</span><span class="t">Grammar</span></a>
+    </div>
+  </section>
+
+  <!-- ============ 01 PART OF SPEECH ============ -->
+  <section id="part-of-speech">
+    <p class="eyebrow">Bagian 01</p>
+    <h2 class="sec">Part of Speech</h2>
+    <p class="sec-lead">10 jenis kata berdasarkan fungsinya. Fondasi semua tata bahasa — satu kata bisa berperan beda tergantung posisinya, jadi pahami <em>fungsinya</em>, bukan hafal labelnya.</p>
+
+    <div id="posLessons"></div>
+
+    <div class="card" style="margin-top:24px">
+      <div class="quiz-head"><h3>Latihan: Tebak Part of Speech</h3></div>
+      <p class="muted" style="margin:2px 0 0">Kata yang <b>ditebalkan</b> dalam kalimat — termasuk jenis apa?</p>
+      <div id="quiz-pos"></div>
+    </div>
+  </section>
+
+  <!-- ============ 02 STRUKTUR ============ -->
+  <section id="struktur">
+    <p class="eyebrow">Bagian 02</p>
+    <h2 class="sec">Struktur Kalimat</h2>
+    <p class="sec-lead">Empat jenis kalimat dibedakan dari <em>berapa</em> dan <em>jenis</em> klausa yang dipakai. Klausa bebas berdiri sendiri; klausa terikat menggantung.</p>
+
+    <div class="grid cols-2" id="sentTypes"></div>
+
+    <div class="card" style="margin-top:6px">
+      <div class="quiz-head"><h3>Latihan: Klasifikasi Kalimat</h3></div>
+      <p class="muted" style="margin:2px 0 0">Kalimat berikut termasuk jenis apa?</p>
+      <div id="quiz-struktur"></div>
+    </div>
+  </section>
+
+  <!-- ============ 03 FRASA ============ -->
+  <section id="frasa">
+    <p class="eyebrow">Bagian 03</p>
+    <h2 class="sec">Frasa (Phrase)</h2>
+    <p class="sec-lead">Sekelompok kata yang bekerja sebagai satu unit, tapi <b>tanpa</b> pasangan subjek + verb. Itulah beda utamanya dari klausa. Frasa dinamai sesuai kata intinya (head).</p>
+    <blockquote><b>Frasa</b> = grup kata tanpa subjek-predikat → <span class="ex">"on the table", "very tired", "the tall building"</span>. <b>Klausa</b> = grup kata DENGAN subjek + verb → <span class="ex">"because she was tired"</span>.</blockquote>
+
+    <div id="phraseLessons"></div>
+
+    <div class="card" style="margin-top:4px">
+      <h3>📌 Ringkasan Frasa</h3>
+      <table>
+        <thead><tr><th>Frasa</th><th>Inti</th><th>Fungsi</th><th>Contoh</th></tr></thead>
+        <tbody id="phraseTable"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 04 KLAUSA ============ -->
+  <section id="klausa">
+    <p class="eyebrow">Bagian 04</p>
+    <h2 class="sec">Klausa (Clause)</h2>
+    <p class="sec-lead">Sekelompok kata yang memiliki subjek <b>dan</b> verb. Bisa berdiri sendiri (independent) atau menggantung karena kata penghubung (dependent).</p>
+
+    <div class="grid cols-2">
+      <div class="card">
+        <span class="chip" style="--c:var(--pos-verb)"><span class="sw"></span>Independent</span>
+        <h3 style="margin-top:10px">Klausa Bebas</h3>
+        <p class="muted" style="margin-top:0">Bisa berdiri sendiri sebagai kalimat lengkap. Subjek + verb + makna utuh.</p>
+        <p class="ex">Fadhola got the job. · She built a RAG system.</p>
+      </div>
+      <div class="card">
+        <span class="chip" style="--c:var(--pos-conjunction)"><span class="sw"></span>Dependent</span>
+        <h3 style="margin-top:10px">Klausa Terikat</h3>
+        <p class="muted" style="margin-top:0">Punya subjek + verb, tapi diawali penghubung yang membuatnya menggantung. Butuh induk.</p>
+        <p class="ex">…because he prepared well · …who built RAG systems</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>3 Jenis Dependent Clause</h3>
+      <table>
+        <thead><tr><th>Jenis</th><th>Fungsi</th><th>Contoh</th></tr></thead>
+        <tbody>
+          <tr><td><b>Noun clause</b></td><td>sebagai noun (subjek/objek)</td><td class="ex">I know <b>that he passed</b>.</td></tr>
+          <tr><td><b>Adjective (relative)</b></td><td>menerangkan noun</td><td class="ex">The man <b>who called</b> is here.</td></tr>
+          <tr><td><b>Adverbial</b></td><td>menerangkan verb (kapan/kenapa)</td><td class="ex">I left <b>when it ended</b>.</td></tr>
+        </tbody>
+      </table>
+      <blockquote><span class="ex">"he prepared well"</span> bisa berdiri sendiri. Tambah <span class="ex">"because"</span> di depan → <span class="ex">"because he prepared well"</span> langsung menggantung. Penghubung itulah yang mengikat klausa.</blockquote>
+    </div>
+
+    <div class="card">
+      <h3>Contoh Penggabungan Klausa</h3>
+      <table>
+        <thead><tr><th>Kombinasi</th><th>Hasil</th><th>Contoh</th></tr></thead>
+        <tbody>
+          <tr><td>Independent + Independent</td><td><b>Compound</b></td><td class="ex">She prepared well<b>, and</b> she got the job.</td></tr>
+          <tr><td>Independent + Dependent</td><td><b>Complex</b></td><td class="ex">She got the job <b>because she prepared well</b>.</td></tr>
+          <tr><td>2 Independent + 1 Dependent</td><td><b>Compound-Complex</b></td><td class="ex"><b>Although the test was hard,</b> she passed it<b>, and</b> she felt proud.</td></tr>
+        </tbody>
+      </table>
+      <blockquote><b>Frasa vs Klausa — pembeda kunci:</b> ada subjek + verb? <b>Tidak</b> → frasa (<span class="ex">in the office, very tired</span>). <b>Ya</b> → klausa (<span class="ex">she works, because she was tired</span>).</blockquote>
+    </div>
+  </section>
+
+  <!-- ============ 05 GRAMMAR ============ -->
+  <section id="grammar">
+    <p class="eyebrow">Bagian 05</p>
+    <h2 class="sec">Grammar</h2>
+    <p class="sec-lead">Tenses, agreement, modal, voice, conditional, dan reported speech — bagian yang melatih pemahaman struktur lewat transformasi.</p>
+
+    <div class="lesson-nav" id="grammarNav"></div>
+
+    <!-- Tenses -->
+    <div class="card" id="g-tenses">
+      <h3>5.1 — 12 Tenses</h3>
+      <p class="muted" style="margin-top:0">3 waktu × 4 aspek. Verb contoh: <b>work</b> (subjek she/I). Klik tiap sel untuk melihat rumus & contoh.</p>
+      <div class="tense-grid" id="tenseGrid"></div>
+      <div class="card" style="margin-top:16px;box-shadow:none;background:#fbfbfd">
+        <div class="quiz-head"><h3 style="font-size:18px">Latihan: Pilih Tense yang Tepat</h3></div>
+        <div id="quiz-tense"></div>
+      </div>
+    </div>
+
+    <!-- Agreement / pronoun / modal accordions -->
+    <details class="acc" style="--c:var(--pos-noun)">
+      <summary><span class="mk">5.2</span>Subject–Verb Agreement<span class="ar">›</span></summary>
+      <div class="body">
+        <p>Verb harus sesuai jumlah subjek. Tunggal (he/she/it) → verb <b>+s/es</b>; jamak (they/we) → tanpa s.</p>
+        <table>
+          <thead><tr><th>Situasi</th><th>Aturan</th><th>Contoh</th></tr></thead>
+          <tbody>
+            <tr><td>Each / every / everyone</td><td>tunggal</td><td class="ex">Everyone <b>is</b> here.</td></tr>
+            <tr><td>Subjek + "of"</td><td>ikut kata sebelum "of"</td><td class="ex">Each of the students <b>is</b> ready.</td></tr>
+            <tr><td>Dua subjek + "and"</td><td>jamak</td><td class="ex">Tom and Jane <b>are</b> here.</td></tr>
+            <tr><td>either…or</td><td>ikut subjek terdekat</td><td class="ex">Either he or they <b>are</b> wrong.</td></tr>
+            <tr><td>with / as well as</td><td>abaikan sisipan</td><td class="ex">The manager, with his team, <b>is</b> here.</td></tr>
+            <tr><td>Uncountable / collective</td><td>tunggal</td><td class="ex">The information <b>is</b> correct.</td></tr>
+          </tbody>
+        </table>
+        <blockquote class="warn"><b>Jebakan:</b> ❌ "The list of items <b>are</b> long" → ✓ "The list of items <b>is</b> long" (subjeknya "list", bukan "items").</blockquote>
+      </div>
+    </details>
+
+    <details class="acc" style="--c:var(--pos-pronoun)">
+      <summary><span class="mk">5.3</span>Pronoun Agreement<span class="ar">›</span></summary>
+      <div class="body">
+        <p>Pronoun harus cocok dengan antecedent-nya dalam jumlah, gender, dan jenis (subjek/objek).</p>
+        <ul>
+          <li class="ex">Fadhola finished <b>his</b> project. (tunggal laki-laki)</li>
+          <li class="ex">The students submitted <b>their</b> reports. (jamak)</li>
+        </ul>
+        <p><b>Subjek vs objek:</b> ✓ <span class="ex">She and I went</span> (bukan "Her and me"); ✓ <span class="ex">They invited her and me</span> (bukan "she and I").</p>
+        <blockquote><b>Trik:</b> hapus pronoun lain, cek satu-satu. <span class="ex">"They invited me"</span> ✓ (bukan "they invited I").</blockquote>
+      </div>
+    </details>
+
+    <details class="acc" style="--c:var(--pos-verb)">
+      <summary><span class="mk">5.4</span>Modal Verbs<span class="ar">›</span></summary>
+      <div class="body">
+        <p>Verb bantu untuk kemungkinan, kemampuan, izin, kewajiban, saran. Rumus: <span class="formula">S + modal + V1</span> — selalu V1, tanpa "to".</p>
+        <table>
+          <thead><tr><th>Modal</th><th>Makna</th><th>Contoh</th></tr></thead>
+          <tbody>
+            <tr><td>can</td><td>kemampuan/izin</td><td class="ex">She <b>can</b> code in Python.</td></tr>
+            <tr><td>could</td><td>lampau/sopan</td><td class="ex">Could you help me?</td></tr>
+            <tr><td>may / might</td><td>izin / kemungkinan kecil</td><td class="ex">It <b>might</b> rain.</td></tr>
+            <tr><td>must</td><td>kewajiban kuat</td><td class="ex">You <b>must</b> submit it.</td></tr>
+            <tr><td>should</td><td>saran</td><td class="ex">You <b>should</b> rest.</td></tr>
+            <tr><td>will / would</td><td>masa depan / pengandaian</td><td class="ex">I <b>would</b> love to.</td></tr>
+          </tbody>
+        </table>
+        <blockquote class="warn">❌ "She <b>can to</b> code" / "She <b>cans</b> code" → ✓ "She <b>can code</b>". Modal tidak pakai -s dan tidak diikuti "to".</blockquote>
+      </div>
+    </details>
+
+    <!-- Active / Passive -->
+    <div class="card" id="g-voice" style="margin-top:12px">
+      <h3>5.5 — Active & Passive Voice</h3>
+      <p class="muted" style="margin-top:0">Active: subjek <b>melakukan</b> aksi. Passive: subjek <b>dikenai</b> aksi. Rumus passive: <span class="formula">S + be + V3 (+ by pelaku)</span>. Klik kartu untuk membaliknya.</p>
+      <div class="flips" id="voiceFlips"></div>
+    </div>
+
+    <!-- Conditional matcher -->
+    <div class="card" id="g-cond">
+      <h3>5.6 — Conditional Sentences</h3>
+      <p class="muted" style="margin-top:0">Kalimat "if": syarat → hasil. Cocokkan tiap kalimat ke tipenya.</p>
+      <div class="grid cols-2" style="margin-bottom:14px">
+        <div><table>
+          <thead><tr><th>Type</th><th>Pola</th></tr></thead>
+          <tbody>
+            <tr><td><b>0</b> fakta umum</td><td><span class="mono">if + present, present</span></td></tr>
+            <tr><td><b>1</b> nyata, mungkin</td><td><span class="mono">if + present, will + V1</span></td></tr>
+            <tr><td><b>2</b> hipotetis kini</td><td><span class="mono">if + past, would + V1</span></td></tr>
+            <tr><td><b>3</b> penyesalan lampau</td><td><span class="mono">if + past perfect, would have + V3</span></td></tr>
+          </tbody>
+        </table></div>
+        <blockquote style="align-self:start">Type 2 pakai <b>were</b> untuk semua subjek: <span class="ex">If I <b>were</b> you…</span></blockquote>
+      </div>
+      <div class="match-row" id="condMatch"></div>
+    </div>
+
+    <!-- Reported speech -->
+    <details class="acc" style="--c:var(--pos-adverb)">
+      <summary><span class="mk">5.7</span>Direct & Indirect Speech<span class="ar">›</span></summary>
+      <div class="body">
+        <p>Direct mengutip persis dalam tanda kutip; indirect melaporkan tanpa kutip, dengan penyesuaian. Tense mundur satu langkah.</p>
+        <div class="grid cols-2">
+          <table>
+            <thead><tr><th>Direct</th><th>Indirect</th></tr></thead>
+            <tbody>
+              <tr><td class="ex">"I work"</td><td class="ex">…she worked</td></tr>
+              <tr><td class="ex">"I am working"</td><td class="ex">…she was working</td></tr>
+              <tr><td class="ex">"I have finished"</td><td class="ex">…she had finished</td></tr>
+              <tr><td class="ex">"I will go"</td><td class="ex">…she would go</td></tr>
+            </tbody>
+          </table>
+          <table>
+            <thead><tr><th>Keterangan</th><th>Berubah jadi</th></tr></thead>
+            <tbody>
+              <tr><td>now → </td><td>then</td></tr>
+              <tr><td>today → </td><td>that day</td></tr>
+              <tr><td>tomorrow → </td><td>the next day</td></tr>
+              <tr><td>yesterday → </td><td>the day before</td></tr>
+              <tr><td>this / here → </td><td>that / there</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <blockquote>Pertanyaan → "asked" + urutan biasa: <span class="ex">She asked where I worked.</span> Yes/No → if/whether: <span class="ex">She asked if I was ready.</span> Perintah → told/asked + to + V1: <span class="ex">She told me to submit the report.</span></blockquote>
+      </div>
+    </details>
+  </section>
+
+  <section style="padding-top:48px">
+    <div class="card" style="background:linear-gradient(180deg,#fff,#fbfbfd)">
+      <p class="eyebrow">🎯 Penutup</p>
+      <h3 style="font-size:24px">Cara Belajar yang Efektif</h3>
+      <ol style="margin:10px 0 0;padding-left:22px">
+        <li style="margin:7px 0"><b>Kuasai Part of Speech dulu</b> — ini fondasi segalanya. Kalau bisa mengenali jenis kata, sisanya mengikuti.</li>
+        <li style="margin:7px 0"><b>Pahami beda Frasa vs Klausa</b> dengan satu pertanyaan: <em>"Apakah ada subjek + verb?"</em></li>
+        <li style="margin:7px 0"><b>Latihan transformasi</b> — ubah aktif↔pasif, direct↔indirect, ubah tense. Ini melatih pemahaman struktur.</li>
+        <li style="margin:7px 0"><b>Baca banyak kalimat nyata</b> dan bedah strukturnya: mana subjeknya, mana verb-nya, klausa apa saja.</li>
+        <li style="margin:7px 0"><b>Jangan menghafal — pahami pola.</b> Bahasa Inggris sangat berpola; sekali pola tertangkap, ribuan kalimat jadi masuk akal.</li>
+      </ol>
+      <blockquote style="margin-top:14px"><b>Ingat:</b> semua tata bahasa ini hanyalah <em>peta</em>. Tujuan akhirnya adalah <b>berkomunikasi</b>. Gunakan materi ini untuk memahami "kenapa"-nya, lalu praktikkan dengan menulis dan berbicara. Selamat belajar! 📚</blockquote>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <b>Parser</b> — materi tata bahasa Inggris interaktif. Dibuat untuk belajar dengan membongkar, bukan menghafal. Progres latihan tersimpan otomatis di browser ini.
+</footer>
+
+<nav class="bottomnav" aria-label="Navigasi bagian">
+  <a href="#part-of-speech" data-sec="part-of-speech" aria-label="Part of Speech"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10" stroke-linecap="round"/></svg>Kata</a>
+  <a href="#struktur" data-sec="struktur" aria-label="Struktur Kalimat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M12 9H6a2 2 0 0 0-2 2M12 9h6a2 2 0 0 1 2 2" stroke-linecap="round"/></svg>Struktur</a>
+  <a href="#frasa" data-sec="frasa" aria-label="Frasa"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="9" width="16" height="6" rx="2"/></svg>Frasa</a>
+  <a href="#klausa" data-sec="klausa" aria-label="Klausa"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="8" height="5" rx="1.5"/><rect x="13" y="13" width="8" height="5" rx="1.5"/><path d="M7 11v3a2 2 0 0 0 2 2h4" stroke-linecap="round"/></svg>Klausa</a>
+  <a href="#grammar" data-sec="grammar" aria-label="Grammar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><path d="M9 9h6M9 13h6M9 17h3" stroke-linecap="round"/></svg>Grammar</a>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =================== DATA =================== */
+const POS = {
+  noun:        {label:"Noun",         id:"Kata Benda",  desc:"Menyebut nama orang, tempat, benda, atau ide. Bisa didahului a/an/the atau dijamakkan."},
+  pronoun:     {label:"Pronoun",      id:"Kata Ganti",  desc:"Menggantikan noun supaya tidak diulang. Tidak menyebut nama spesifik — hanya menunjuk."},
+  verb:        {label:"Verb",         id:"Kata Kerja",  desc:"Menyatakan aksi atau keadaan. \"Mesin\" kalimat — hampir setiap kalimat butuh verb."},
+  adjective:   {label:"Adjective",    id:"Kata Sifat",  desc:"Menerangkan noun/pronoun: sifat, ukuran, warna, jumlah, kualitas. Bisa diberi \"very\"."},
+  adverb:      {label:"Adverb",       id:"Kata Keterangan", desc:"Menerangkan verb/adjective/adverb lain. Menjawab how, when, where, how often, to what degree."},
+  preposition: {label:"Preposition",  id:"Kata Depan",  desc:"Menunjukkan hubungan tempat/waktu/arah. Selalu diikuti noun/pronoun (object of preposition)."},
+  conjunction: {label:"Conjunction",  id:"Penghubung",  desc:"Menghubungkan kata, frasa, atau klausa. FANBOYS untuk yang setara; because/although untuk yang bertingkat."},
+  interjection:{label:"Interjection", id:"Kata Seru",   desc:"Menyatakan emosi/reaksi spontan. Tidak punya hubungan tata bahasa dengan kalimat lain."},
+  determiner:  {label:"Determiner",   id:"Penentu",     desc:"Mendahului noun untuk menentukan maknanya: a/the, this/that, my/your, one/two."},
+  quantifier:  {label:"Quantifier",   id:"Kuantitas",   desc:"Determiner khusus penunjuk jumlah: many/much, a few/a little, some/any, several."}
+};
+
+// Hero parser sentences: [word, posKeyOrNull]
+const SENTENCES = [
+  {name:"Kalimat Sederhana", tokens:[
+    ["Fadhola","noun"],["confidently","adverb"],["built","verb"],["a","determiner"],["scalable","adjective"],["system","noun"],[".",null]
+  ]},
+  {name:"Dengan Preposisi", tokens:[
+    ["The","determiner"],["talented","adjective"],["engineer","noun"],["works","verb"],["at","preposition"],["a","determiner"],["startup","noun"],["in","preposition"],["Jakarta","noun"],[".",null]
+  ]},
+  {name:"Majemuk Setara", tokens:[
+    ["She","pronoun"],["prepared","verb"],["well",",","adverb"],["and","conjunction"],["she","pronoun"],["got","verb"],["many","quantifier"],["offers","noun"],[".",null]
+  ]},
+  {name:"Penuh Warna", tokens:[
+    ["Wow","interjection"],["!",null],["He","pronoun"],["quickly","adverb"],["sent","verb"],["the","determiner"],["wrong","adjective"],["file","noun"],["because","conjunction"],["he","pronoun"],["was","verb"],["nervous","adjective"],[".",null]
+  ]}
+];
+
+const POS_LESSONS = [
+  {key:"noun", body:`<p><b>Definisi:</b> kata yang menyebut nama orang, tempat, benda, hewan, atau konsep/ide.</p>
+    <p><b>Pertanyaan kunci untuk mengenali noun:</b> <em>"Apakah kata ini bisa didahului 'a/an/the' atau bisa dijamakkan?"</em></p>
+    <h4>Jenis-jenis Noun</h4>
+    <table><thead><tr><th>Jenis</th><th>Penjelasan</th><th>Contoh</th></tr></thead><tbody>
+    <tr><td><b>Common noun</b></td><td>Benda umum (huruf kecil)</td><td class="ex">dog, city, teacher</td></tr>
+    <tr><td><b>Proper noun</b></td><td>Nama khusus (huruf besar)</td><td class="ex">Jakarta, Fadhola, Monday</td></tr>
+    <tr><td><b>Concrete noun</b></td><td>Bisa diindra (dilihat/disentuh)</td><td class="ex">table, water, music</td></tr>
+    <tr><td><b>Abstract noun</b></td><td>Konsep yang tak bisa disentuh</td><td class="ex">freedom, love, beauty</td></tr>
+    <tr><td><b>Countable noun</b></td><td>Bisa dihitung</td><td class="ex">book → books</td></tr>
+    <tr><td><b>Uncountable noun</b></td><td>Tak bisa dihitung satuan</td><td class="ex">water, information, advice</td></tr>
+    <tr><td><b>Collective noun</b></td><td>Kelompok</td><td class="ex">team, family, audience</td></tr></tbody></table>
+    <h4>Abstract Noun Dibentuk dari Kata Lain (Word Formation)</h4>
+    <p>Banyak abstract noun <b>diturunkan</b> dari verb atau adjective dengan menambahkan <b>sufiks (akhiran)</b> — disebut <em>derivational morphology</em>.</p>
+    <div class="grid cols-2">
+      <table><thead><tr><th>Verb</th><th>Sufiks</th><th>Noun</th></tr></thead><tbody>
+      <tr><td>decide</td><td>-sion</td><td>deci<b>sion</b> (keputusan)</td></tr>
+      <tr><td>inform</td><td>-ation</td><td>inform<b>ation</b> (informasi)</td></tr>
+      <tr><td>arrive</td><td>-al</td><td>arriv<b>al</b> (kedatangan)</td></tr>
+      <tr><td>move</td><td>-ment</td><td>move<b>ment</b> (gerakan)</td></tr>
+      <tr><td>fail</td><td>-ure</td><td>fail<b>ure</b> (kegagalan)</td></tr>
+      <tr><td>know</td><td>-ledge</td><td>know<b>ledge</b> (pengetahuan)</td></tr>
+      <tr><td>act</td><td>-ion</td><td>act<b>ion</b> (tindakan)</td></tr></tbody></table>
+      <table><thead><tr><th>Adjective</th><th>Sufiks</th><th>Noun</th></tr></thead><tbody>
+      <tr><td>happy</td><td>-ness</td><td>happi<b>ness</b> (kebahagiaan)</td></tr>
+      <tr><td>free</td><td>-dom</td><td>free<b>dom</b> (kebebasan)</td></tr>
+      <tr><td>able</td><td>-ity</td><td>abil<b>ity</b> (kemampuan)</td></tr>
+      <tr><td>warm</td><td>-th</td><td>warm<b>th</b> (kehangatan)</td></tr>
+      <tr><td>kind</td><td>-ness</td><td>kind<b>ness</b> (kebaikan)</td></tr>
+      <tr><td>different</td><td>-ence</td><td>differ<b>ence</b> (perbedaan)</td></tr>
+      <tr><td>brave</td><td>-ery</td><td>brav<b>ery</b> (keberanian)</td></tr></tbody></table>
+    </div>
+    <blockquote><b>Tips morfologi:</b> sufiks pembentuk noun tersering: <b>-tion/-sion, -ment, -ness, -ity, -ance/-ence, -ship, -dom, -hood, -age</b>. Kalau lihat akhiran ini, hampir pasti kata itu noun.</blockquote>
+    <p><b>Contoh dalam kalimat:</b></p>
+    <ul>
+      <li class="ex">Her <b>kindness</b> surprised everyone. (kindness = noun dari adjective "kind")</li>
+      <li class="ex">The <b>decision</b> was difficult. (decision = noun dari verb "decide")</li>
+      <li class="ex">We value <b>freedom</b> and <b>honesty</b>.</li>
+    </ul>
+    <p><b>Tips membedakan noun:</b> bisa diberi the/a/an ("the decision" ✓) · bisa jadi subjek atau objek · sering diakhiri sufiks noun (-tion, -ness, -ment, dll.).</p>`},
+
+  {key:"pronoun", body:`<p><b>Definisi:</b> kata yang menggantikan noun supaya tidak diulang-ulang.</p>
+    <blockquote>Tanpa pronoun: <span class="ex">"Fadhola opened Fadhola's laptop because Fadhola needed Fadhola's notes."</span><br>Dengan pronoun: <span class="ex">"Fadhola opened <b>his</b> laptop because <b>he</b> needed <b>his</b> notes."</span> — jauh lebih natural.</blockquote>
+    <h4>Jenis-jenis Pronoun</h4>
+    <table><thead><tr><th>Jenis</th><th>Fungsi</th><th>Contoh</th></tr></thead><tbody>
+    <tr><td><b>Personal (subjek)</b></td><td>Pelaku</td><td class="ex">I, you, he, she, it, we, they</td></tr>
+    <tr><td><b>Personal (objek)</b></td><td>Penerima aksi</td><td class="ex">me, you, him, her, it, us, them</td></tr>
+    <tr><td><b>Possessive</b></td><td>Kepemilikan</td><td class="ex">mine, yours, his, hers, ours, theirs</td></tr>
+    <tr><td><b>Reflexive</b></td><td>Aksi ke diri sendiri</td><td class="ex">myself, yourself, himself, themselves</td></tr>
+    <tr><td><b>Demonstrative</b></td><td>Menunjuk</td><td class="ex">this, that, these, those</td></tr>
+    <tr><td><b>Interrogative</b></td><td>Bertanya</td><td class="ex">who, whom, whose, which, what</td></tr>
+    <tr><td><b>Relative</b></td><td>Menghubungkan klausa</td><td class="ex">who, which, that, whom, whose</td></tr>
+    <tr><td><b>Indefinite</b></td><td>Tak tentu</td><td class="ex">someone, anything, everybody, none</td></tr></tbody></table>
+    <p><b>Contoh dalam kalimat:</b></p>
+    <ul>
+      <li><em>Subjek:</em> <span class="ex"><b>She</b> works at a startup.</span></li>
+      <li><em>Objek:</em> <span class="ex">The CEO interviewed <b>him</b>.</span></li>
+      <li><em>Possessive:</em> <span class="ex">This laptop is <b>mine</b>.</span></li>
+      <li><em>Reflexive:</em> <span class="ex">He taught <b>himself</b> Python.</span></li>
+      <li><em>Demonstrative:</em> <span class="ex"><b>These</b> are my projects.</span></li>
+    </ul>
+    <p><b>Tips:</b> pronoun tidak menyebut nama spesifik — ia hanya menunjuk.</p>
+    <blockquote class="warn">Hati-hati possessive: <b>its</b> (kepunyaan "it", tanpa apostrof) vs <b>it's</b> (= it is). Ini kesalahan paling sering.</blockquote>`},
+
+  {key:"verb", body:`<p><b>Definisi:</b> kata yang menyatakan <b>aksi</b> (tindakan) atau <b>state</b> (keadaan/kondisi). Verb adalah "mesin" kalimat — hampir setiap kalimat butuh verb.</p>
+    <h4>Jenis-jenis Verb</h4>
+    <table><thead><tr><th>Jenis</th><th>Penjelasan</th><th>Contoh</th></tr></thead><tbody>
+    <tr><td><b>Action verb</b></td><td>Tindakan nyata</td><td class="ex">run, write, eat, build</td></tr>
+    <tr><td><b>Stative verb</b></td><td>Keadaan/kondisi</td><td class="ex">know, believe, love, seem</td></tr>
+    <tr><td><b>Linking verb</b></td><td>Menghubungkan subjek ke deskripsinya</td><td class="ex">be (am/is/are), become, seem, feel</td></tr>
+    <tr><td><b>Auxiliary (helping)</b></td><td>Kata kerja bantu</td><td class="ex">be, do, have</td></tr>
+    <tr><td><b>Modal</b></td><td>Bantu khusus (kemungkinan, izin, dll.)</td><td class="ex">can, will, must, should</td></tr>
+    <tr><td><b>Transitive</b></td><td>Butuh objek</td><td class="ex">She <b>wrote</b> a report.</td></tr>
+    <tr><td><b>Intransitive</b></td><td>Tidak butuh objek</td><td class="ex">He <b>slept</b>.</td></tr></tbody></table>
+    <p><b>Action vs Linking verb (penting!):</b></p>
+    <ul>
+      <li><em>Action:</em> <span class="ex">She <b>feels</b> the fabric.</span> (feel = menyentuh, ada aksi)</li>
+      <li><em>Linking:</em> <span class="ex">She <b>feels</b> tired.</span> (feel = keadaan, menghubungkan "she" ke "tired")</li>
+    </ul>
+    <blockquote><b>Trik:</b> kalau verb bisa diganti tanda "=" dan maknanya tetap masuk akal, itu <b>linking verb</b>. "She feels tired" → "She = tired" ✓ berarti linking.</blockquote>
+    <h4>Bentuk Verb (5 Verb Forms — penting untuk tenses)</h4>
+    <table><thead><tr><th>Base (V1)</th><th>Past (V2)</th><th>Past Participle (V3)</th><th>-ing</th><th>-s/es</th></tr></thead><tbody>
+    <tr><td>go</td><td>went</td><td>gone</td><td>going</td><td>goes</td></tr>
+    <tr><td>write</td><td>wrote</td><td>written</td><td>writing</td><td>writes</td></tr>
+    <tr><td>build</td><td>built</td><td>built</td><td>building</td><td>builds</td></tr>
+    <tr><td>work</td><td>worked</td><td>worked</td><td>working</td><td>works</td></tr></tbody></table>
+    <blockquote><b>Regular verbs</b> membentuk V2 & V3 dengan <b>-ed</b> (work→worked). <b>Irregular verbs</b> berubah tak beraturan (go→went→gone) — harus dihafal.</blockquote>
+    <p><b>Tips membedakan verb:</b> bisa diubah ke bentuk lampau (work → worked) · bisa diberi "to" di depan (infinitive: to run, to think).</p>`},
+
+  {key:"adjective", body:`<p><b>Definisi:</b> kata yang <b>menjelaskan/menerangkan noun atau pronoun</b> — memberi tahu sifat, ukuran, warna, jumlah, kualitas.</p>
+    <p><b>Pertanyaan kunci:</b> <em>"Kata ini menjawab: yang mana? seperti apa? berapa banyak?"</em></p>
+    <p><b>Posisi adjective:</b></p>
+    <ol>
+      <li><b>Sebelum noun (attributive):</b> <span class="ex">a <b>beautiful</b> city</span></li>
+      <li><b>Setelah linking verb (predicative):</b> <span class="ex">The city is <b>beautiful</b>.</span></li>
+    </ol>
+    <p><b>Contoh dalam kalimat:</b></p>
+    <ul>
+      <li class="ex">She built a <b>scalable</b> system. (scalable menerangkan "system")</li>
+      <li class="ex">The interview was <b>difficult</b>. (difficult menerangkan "interview")</li>
+    </ul>
+    <h4>Tingkat Perbandingan (Degrees of Comparison)</h4>
+    <table><thead><tr><th>Positive</th><th>Comparative</th><th>Superlative</th></tr></thead><tbody>
+    <tr><td>big</td><td>bigg<b>er</b></td><td>the bigg<b>est</b></td></tr>
+    <tr><td>smart</td><td>smart<b>er</b></td><td>the smart<b>est</b></td></tr>
+    <tr><td>beautiful</td><td><b>more</b> beautiful</td><td>the <b>most</b> beautiful</td></tr>
+    <tr><td>good</td><td><b>better</b> (irregular)</td><td>the <b>best</b></td></tr>
+    <tr><td>bad</td><td><b>worse</b> (irregular)</td><td>the <b>worst</b></td></tr></tbody></table>
+    <blockquote><b>Aturan:</b> kata pendek (1 suku kata) pakai <b>-er/-est</b>. Kata panjang (3+ suku kata) pakai <b>more/most</b>.</blockquote>
+    <h4>Adjective Dibentuk dari Kata Lain</h4>
+    <table><thead><tr><th>Asal</th><th>Sufiks</th><th>Adjective</th></tr></thead><tbody>
+    <tr><td>beauty (noun)</td><td>-ful</td><td>beauti<b>ful</b></td></tr>
+    <tr><td>care (noun)</td><td>-less</td><td>care<b>less</b></td></tr>
+    <tr><td>nature (noun)</td><td>-al</td><td>natur<b>al</b></td></tr>
+    <tr><td>create (verb)</td><td>-ive</td><td>creat<b>ive</b></td></tr>
+    <tr><td>read (verb)</td><td>-able</td><td>read<b>able</b></td></tr>
+    <tr><td>danger (noun)</td><td>-ous</td><td>danger<b>ous</b></td></tr></tbody></table>
+    <blockquote>Sufiks adjective umum: <b>-ful, -less, -ous, -al, -ive, -able/-ible, -ic, -y, -ish</b>.</blockquote>
+    <p><b>Tips membedakan adjective:</b> letaknya sebelum noun atau setelah be/seem/become · bisa diberi "very" (very tall ✓).</p>`},
+
+  {key:"adverb", body:`<p><b>Definisi:</b> kata yang <b>menerangkan verb, adjective, atau adverb lain</b>. Memberi tahu <em>bagaimana, kapan, di mana, seberapa sering, seberapa</em>.</p>
+    <p><b>Pertanyaan kunci:</b> <em>how? when? where? how often? to what degree?</em></p>
+    <h4>Jenis-jenis Adverb</h4>
+    <table><thead><tr><th>Jenis</th><th>Menjawab</th><th>Contoh</th></tr></thead><tbody>
+    <tr><td><b>Manner</b> (cara)</td><td>How?</td><td class="ex">quickly, carefully, well</td></tr>
+    <tr><td><b>Time</b> (waktu)</td><td>When?</td><td class="ex">now, yesterday, soon, already</td></tr>
+    <tr><td><b>Place</b> (tempat)</td><td>Where?</td><td class="ex">here, there, everywhere</td></tr>
+    <tr><td><b>Frequency</b> (frekuensi)</td><td>How often?</td><td class="ex">always, often, never, sometimes</td></tr>
+    <tr><td><b>Degree</b> (tingkat)</td><td>How much?</td><td class="ex">very, too, quite, almost</td></tr></tbody></table>
+    <p><b>Contoh dalam kalimat:</b></p>
+    <ul>
+      <li><em>Menerangkan verb:</em> <span class="ex">She codes <b>efficiently</b>.</span> (bagaimana dia coding?)</li>
+      <li><em>Menerangkan adjective:</em> <span class="ex">The task was <b>extremely</b> hard.</span> (seberapa hard?)</li>
+      <li><em>Menerangkan adverb lain:</em> <span class="ex">He runs <b>very</b> quickly.</span></li>
+    </ul>
+    <h4>Adjective vs Adverb — Perbedaan Tersulit</h4>
+    <p>Banyak adverb dibentuk dari adjective + <b>-ly</b>:</p>
+    <table><thead><tr><th>Adjective</th><th>Adverb</th></tr></thead><tbody>
+    <tr><td>quick</td><td>quick<b>ly</b></td></tr>
+    <tr><td>careful</td><td>careful<b>ly</b></td></tr>
+    <tr><td>easy</td><td>eas<b>ily</b></td></tr>
+    <tr><td>good</td><td><b>well</b> (irregular!)</td></tr></tbody></table>
+    <p><b>Cara membedakan:</b> adjective menerangkan <b>noun</b> (<span class="ex">a <b>quick</b> runner</span>); adverb menerangkan <b>verb</b> (<span class="ex">He runs <b>quickly</b>.</span>).</p>
+    <blockquote class="warn"><b>Jebakan umum:</b> ❌ "She sings good" → ✓ "She sings <b>well</b>" (menerangkan verb "sings"). Tapi: ✓ "She is a <b>good</b> singer" (good menerangkan noun "singer").</blockquote>
+    <blockquote><b>Hati-hati:</b> tidak semua kata berakhiran -ly itu adverb! <b>friendly, lovely, lonely</b> adalah adjective.</blockquote>`},
+
+  {key:"preposition", body:`<p><b>Definisi:</b> kata yang menunjukkan <b>hubungan</b> antara noun/pronoun dengan kata lain — biasanya hubungan <b>tempat, waktu, arah, atau cara</b>.</p>
+    <h4>Kelompok Preposition</h4>
+    <ul>
+      <li><b>Tempat (Place):</b> in, on, at, under, above, between, behind, beside, near</li>
+      <li><b>Waktu (Time):</b> in, on, at, before, after, during, since, until</li>
+      <li><b>Arah (Direction):</b> to, from, into, onto, through, across, toward</li>
+    </ul>
+    <p><b>Contoh dalam kalimat:</b></p>
+    <ul>
+      <li class="ex">The book is <b>on</b> the table. (tempat)</li>
+      <li class="ex">We meet <b>at</b> 9 a.m. (waktu)</li>
+      <li class="ex">She walked <b>into</b> the room. (arah)</li>
+    </ul>
+    <h4>Aturan in/on/at (paling membingungkan)</h4>
+    <table><thead><tr><th></th><th>TIME</th><th>PLACE</th></tr></thead><tbody>
+    <tr><td><b>at</b></td><td>jam: <span class="ex">at 9 a.m.</span></td><td>titik spesifik: <span class="ex">at the door</span></td></tr>
+    <tr><td><b>on</b></td><td>hari/tanggal: <span class="ex">on Monday</span></td><td>permukaan: <span class="ex">on the wall</span></td></tr>
+    <tr><td><b>in</b></td><td>bulan/tahun: <span class="ex">in 2026</span></td><td>ruang/area: <span class="ex">in Jakarta</span></td></tr></tbody></table>
+    <blockquote><b>Logika:</b> <b>in</b> = besar/tertutup, <b>on</b> = permukaan/hari, <b>at</b> = titik spesifik. Dari besar ke kecil: in → on → at.</blockquote>
+    <p><b>Tips:</b> preposition selalu diikuti noun/pronoun (object of preposition): <span class="ex">in <b>the room</b>, to <b>him</b></span>. ❌ "in he" → ✓ "in <b>him</b>".</p>`},
+
+  {key:"conjunction", body:`<p><b>Definisi:</b> kata yang <b>menghubungkan</b> kata, frasa, atau klausa. Ada 3 jenis.</p>
+    <h4>1. Coordinating Conjunction</h4>
+    <p>Menghubungkan dua hal <b>setara</b>. Ingat dengan <b>FANBOYS</b>: <b>F</b>or, <b>A</b>nd, <b>N</b>or, <b>B</b>ut, <b>O</b>r, <b>Y</b>et, <b>S</b>o.</p>
+    <p class="ex">I applied to BCA Digital, <b>and</b> I interviewed at Transjakarta.</p>
+    <h4>2. Subordinating Conjunction</h4>
+    <p>Menghubungkan klausa <b>tidak setara</b> (anak kalimat ke induk): because, although, when, if, while, since, unless, after, before, until.</p>
+    <p class="ex">He got the job <b>because</b> he prepared well.</p>
+    <h4>3. Correlative Conjunction</h4>
+    <p>Pasangan kata: both…and, either…or, neither…nor, not only…but also.</p>
+    <p class="ex"><b>Both</b> the HR <b>and</b> the technical interview went well.</p>
+    <blockquote><b>Tips:</b> coordinating (FANBOYS) menghubungkan dua kalimat yang masing-masing bisa berdiri sendiri. Subordinating membuat satu klausa <b>bergantung</b> pada yang lain.</blockquote>`},
+
+  {key:"interjection", body:`<p><b>Definisi:</b> kata/ungkapan yang menyatakan <b>emosi atau reaksi spontan</b>. Biasanya berdiri sendiri dan diikuti tanda seru (!) atau koma.</p>
+    <p><b>Contoh:</b> <span class="ex">Wow! Oh! Ouch! Hey! Hooray! Oops! Well, Alas, Hmm</span></p>
+    <p><b>Contoh dalam kalimat:</b></p>
+    <ul>
+      <li class="ex"><b>Wow!</b> I got the offer!</li>
+      <li class="ex"><b>Oops</b>, I sent the wrong file.</li>
+      <li class="ex"><b>Hey</b>, can you help me?</li>
+    </ul>
+    <blockquote><b>Tips:</b> interjection tidak punya hubungan tata bahasa dengan kalimat lain — bisa dihapus tanpa merusak struktur kalimat.</blockquote>`},
+
+  {key:"determiner", body:`<p><b>Definisi:</b> kata yang <b>mendahului noun</b> untuk menentukan/membatasi maknanya (yang mana, milik siapa, berapa).</p>
+    <h4>Jenis Determiner</h4>
+    <table><thead><tr><th>Jenis</th><th>Contoh</th></tr></thead><tbody>
+    <tr><td><b>Articles</b></td><td class="ex">a, an, the</td></tr>
+    <tr><td><b>Demonstratives</b></td><td class="ex">this, that, these, those</td></tr>
+    <tr><td><b>Possessives</b></td><td class="ex">my, your, his, her, our, their</td></tr>
+    <tr><td><b>Numbers</b></td><td class="ex">one, two, first, second</td></tr></tbody></table>
+    <p><b>Contoh dalam kalimat:</b></p>
+    <ul>
+      <li class="ex"><b>The</b> laptop is new.</li>
+      <li class="ex"><b>My</b> project is finished.</li>
+      <li class="ex"><b>This</b> book is interesting.</li>
+    </ul>
+    <h4>Articles: a / an / the</h4>
+    <ul>
+      <li><b>a/an</b> = umum, satu (belum tentu/baru disebut). <b>a</b> + bunyi konsonan (<span class="ex">a book</span>), <b>an</b> + bunyi vokal (<span class="ex">an apple, an hour</span>).</li>
+      <li><b>the</b> = spesifik (sudah jelas/sudah disebut). <span class="ex">I bought <b>a</b> book. <b>The</b> book is good.</span></li>
+    </ul>
+    <blockquote>Yang dilihat <b>bunyi</b>, bukan huruf: <span class="ex">an <b>h</b>our</span> (h tak dibunyikan), <span class="ex">a <b>u</b>niversity</span> (dibaca "yu-").</blockquote>
+    <p><b>Determiner vs Adjective:</b> determiner datang lebih dulu dan menentukan (my, the, this); adjective datang setelahnya dan menggambarkan. Urutan: <b>Determiner → Adjective → Noun</b> (<span class="ex">the big house, my new laptop</span>).</p>`},
+
+  {key:"quantifier", body:`<p><b>Definisi:</b> sejenis determiner khusus yang menunjukkan <b>jumlah/kuantitas</b> noun. (Banyak buku menganggap quantifier bagian dari determiner.)</p>
+    <h4>Quantifier dan Pasangannya</h4>
+    <table><thead><tr><th>Quantifier</th><th>Dipakai dengan</th><th>Contoh</th></tr></thead><tbody>
+    <tr><td><b>many</b></td><td>countable</td><td class="ex">many books</td></tr>
+    <tr><td><b>much</b></td><td>uncountable</td><td class="ex">much water</td></tr>
+    <tr><td><b>a lot of / lots of</b></td><td>keduanya</td><td class="ex">a lot of friends / water</td></tr>
+    <tr><td><b>a few / few</b></td><td>countable</td><td class="ex">a few ideas</td></tr>
+    <tr><td><b>a little / little</b></td><td>uncountable</td><td class="ex">a little time</td></tr>
+    <tr><td><b>some</b></td><td>keduanya (positif)</td><td class="ex">some apples / some milk</td></tr>
+    <tr><td><b>any</b></td><td>keduanya (negatif/tanya)</td><td class="ex">any questions?</td></tr>
+    <tr><td><b>several</b></td><td>countable</td><td class="ex">several options</td></tr></tbody></table>
+    <p><b>Contoh dalam kalimat:</b></p>
+    <ul>
+      <li class="ex">She has <b>many</b> certificates. (countable)</li>
+      <li class="ex">There isn't <b>much</b> time left. (uncountable)</li>
+      <li class="ex">I need <b>a little</b> help.</li>
+    </ul>
+    <blockquote><b>many</b> + benda yang bisa dihitung (books, people, ideas); <b>much</b> + benda yang tidak bisa dihitung (water, time, information). Ragu? Pakai <b>a lot of</b> — aman untuk keduanya.</blockquote>`}
+];
+
+const SENT_TYPES = [
+  {c:"var(--pos-noun)", name:"Simple", formula:"1 Independent Clause",
+   desc:"Satu klausa bebas: satu subjek + satu predikat, satu ide lengkap. \"Simple\" bukan berarti pendek.",
+   ex:`<span class="ex">Fadhola builds AI systems.</span><br><span class="muted">Subjek majemuk tetap simple: <span class="ex">She and her team launched the product.</span></span>`},
+  {c:"var(--pos-conjunction)", name:"Compound", formula:"Independent + (FANBOYS/;) + Independent",
+   desc:"Dua+ klausa bebas yang setara. Cek: kedua sisi penghubung bisa jadi kalimat utuh sendiri.",
+   ex:`<span class="ex">She prepared well<b>, and</b> she got the job.</span><br><span class="ex">The HR round was easy<b>; however,</b> the technical round was hard.</span>`},
+  {c:"var(--pos-verb)", name:"Complex", formula:"Independent + Dependent",
+   desc:"Satu klausa bebas + satu+ klausa terikat. Hubungan induk–anak. Dependent diawali because/when/who…",
+   ex:`<span class="ex"><b>Because he prepared well,</b> he got the job.</span><br><span class="muted">Dependent di depan → pakai koma. Di belakang → tanpa koma.</span>`},
+  {c:"var(--pos-adjective)", name:"Compound-Complex", formula:"2+ Independent + 1+ Dependent",
+   desc:"Gabungan: minimal dua klausa bebas DAN minimal satu klausa terikat.",
+   ex:`<span class="ex"><b>Because he prepared well,</b> he got the offer<b>, and</b> he started immediately.</span>`}
+];
+
+const PHRASES = [
+  ["Noun phrase","noun","subjek / objek","the talented engineer"],
+  ["Verb phrase","verb","predikat","has been working"],
+  ["Prepositional","preposition","adjective / adverb","on the table"],
+  ["Adjective phrase","adjective","menerangkan noun","incredibly efficient"],
+  ["Adverbial phrase","adverb","menerangkan verb","very quickly"]
+];
+
+const PHRASE_LESSONS = [
+  {key:"noun", title:"Noun Phrase", sub:"Frasa Nomina",
+   body:`<p><b>Inti:</b> noun. <b>Fungsi:</b> sebagai subjek, objek, atau pelengkap — sama seperti noun tunggal, tetapi lebih kaya.</p>
+   <p><b>Struktur:</b> <span class="formula">(Determiner) + (Adjective) + NOUN + (modifier)</span></p>
+   <ul>
+     <li class="ex"><b>The talented engineer</b> got hired. (sebagai subjek)</li>
+     <li class="ex">She built <b>a scalable document pipeline</b>. (sebagai objek)</li>
+     <li class="ex"><b>The candidate with production experience</b> stood out. (noun + prepositional phrase)</li>
+   </ul>
+   <blockquote>Noun phrase bisa menempati posisi mana pun yang bisa ditempati noun.</blockquote>`},
+  {key:"verb", title:"Verb Phrase", sub:"Frasa Verba",
+   body:`<p><b>Inti:</b> main verb. <b>Fungsi:</b> sebagai predikat — menyatakan aksi/keadaan, sering bersama auxiliary verb.</p>
+   <p><b>Struktur:</b> <span class="formula">(Auxiliary/modal) + MAIN VERB + (objek/komplemen)</span></p>
+   <ul>
+     <li class="ex">She <b>has been working</b> on the prototype. (auxiliary: has been + verb: working)</li>
+     <li class="ex">He <b>will submit</b> the report tomorrow. (modal: will + verb: submit)</li>
+     <li class="ex">They <b>are building</b> an agent system.</li>
+   </ul>
+   <blockquote>"Mesin aksi" kalimat. Mencakup verb utama beserta semua kata bantu dan objeknya.</blockquote>`},
+  {key:"preposition", title:"Prepositional Phrase", sub:"Frasa Preposisi",
+   body:`<p><b>Inti:</b> preposition. <b>Struktur:</b> <span class="formula">PREPOSITION + (determiner) + noun/pronoun</span> (object of preposition).</p>
+   <p><b>Fungsi ganda:</b> bisa berperan sebagai <b>adjective</b> (menerangkan noun) atau <b>adverb</b> (menerangkan verb).</p>
+   <ul>
+     <li class="ex">The book <b>on the table</b> is mine. → adjective (buku yang mana?)</li>
+     <li class="ex">She works <b>at a startup</b>. → adverb (di mana?)</li>
+     <li class="ex">We met <b>after the interview</b>. → adverb (kapan?)</li>
+   </ul>
+   <blockquote>Selalu dimulai preposition, diakhiri noun/pronoun. Tidak pernah mengandung subjek + verb.</blockquote>`},
+  {key:"adjective", title:"Adjective Phrase", sub:"Frasa Adjektiva",
+   body:`<p><b>Inti:</b> adjective. <b>Fungsi:</b> menerangkan noun/pronoun, sama seperti adjective tunggal tapi diperluas (sering dengan adverb atau prepositional phrase).</p>
+   <ul>
+     <li class="ex">The system is <b>incredibly efficient</b>. (adverb "incredibly" + adjective "efficient")</li>
+     <li class="ex">She is <b>good at problem-solving</b>. (adjective + prepositional phrase)</li>
+     <li class="ex">A <b>surprisingly difficult</b> question came up.</li>
+   </ul>
+   <blockquote>Cek: apakah keseluruhan frasa menjawab "seperti apa?" → ya, berarti adjective phrase.</blockquote>`},
+  {key:"adverb", title:"Adverbial Phrase", sub:"Frasa Adverbia",
+   body:`<p><b>Inti:</b> adverb. <b>Fungsi:</b> menerangkan verb/adjective/adverb — menjawab <em>bagaimana, kapan, di mana, seberapa sering</em>.</p>
+   <ul>
+     <li class="ex">She finished the task <b>very quickly</b>. (bagaimana?)</li>
+     <li class="ex">He arrived <b>earlier than expected</b>. (kapan?)</li>
+     <li class="ex">They worked <b>quite efficiently</b>. (bagaimana?)</li>
+   </ul>
+   <blockquote>Prepositional phrase juga bisa berfungsi sebagai adverbial (<span class="ex">"in the morning", "at the office"</span>). Jadi "adverbial phrase" sering dipakai luas untuk frasa apa pun yang berperan seperti adverb.</blockquote>`}
+];
+
+const TENSES = [
+  // [name, formula, example]
+  ["Simple Present","S + V1 (+s/es)","She works at a startup."],
+  ["Present Continuous","S + am/is/are + V-ing","She is working right now."],
+  ["Present Perfect","S + have/has + V3","She has finished the report."],
+  ["Present Perfect Cont.","S + have/has been + V-ing","She has been working for 6 months."],
+  ["Simple Past","S + V2","She worked at Jatis Mobile."],
+  ["Past Continuous","S + was/were + V-ing","She was working when the call came."],
+  ["Past Perfect","S + had + V3","She had finished before the meeting."],
+  ["Past Perfect Cont.","S + had been + V-ing","She had been working for hours."],
+  ["Simple Future","S + will + V1","She will start next Monday."],
+  ["Future Continuous","S + will be + V-ing","This time tomorrow she will be working."],
+  ["Future Perfect","S + will have + V3","By next year she will have completed it."],
+  ["Future Perfect Cont.","S + will have been + V-ing","By June she will have been working a year."]
+];
+
+const VOICE = [
+  {t:"Active",a:"She wrote the report.",p:"The report was written by her."},
+  {t:"Active",a:"They build systems.",p:"Systems are built by them."},
+  {t:"Active",a:"The team will launch it.",p:"It will be launched by the team."}
+];
+
+/* =================== QUIZZES =================== */
+const Q_POS = [
+  {q:`She built a <b>scalable</b> system.`, a:"adjective", why:`"scalable" menerangkan noun "system" (seperti apa?) → adjective.`},
+  {q:`He runs <b>quickly</b> every morning.`, a:"adverb", why:`"quickly" menerangkan verb "runs" (bagaimana?) → adverb. Akhiran -ly dari adjective.`},
+  {q:`The book is <b>on</b> the table.`, a:"preposition", why:`"on" menunjukkan hubungan tempat dan diikuti noun "the table" → preposition.`},
+  {q:`Fadhola got the job <b>because</b> he prepared.`, a:"conjunction", why:`"because" menghubungkan dua klausa (subordinating) → conjunction.`},
+  {q:`<b>Freedom</b> is worth fighting for.`, a:"noun", why:`Abstract noun (dari adjective "free" + -dom). Bisa jadi subjek → noun.`},
+  {q:`<b>She</b> works at a startup.`, a:"pronoun", why:`Menggantikan nama orang sebagai subjek → personal pronoun.`},
+  {q:`The team <b>launched</b> the product.`, a:"verb", why:`Aksi yang dilakukan subjek "team" → verb (action).`},
+  {q:`I need <b>much</b> time to finish.`, a:"quantifier", why:`Menunjuk jumlah noun uncountable "time" → quantifier (much).`},
+  {q:`<b>Oops</b>, I sent the wrong file.`, a:"interjection", why:`Reaksi spontan, berdiri sendiri tanpa hubungan tata bahasa → interjection.`},
+  {q:`<b>My</b> project is finished.`, a:"determiner", why:`Possessive yang mendahului & menentukan noun "project" → determiner.`}
+];
+
+const Q_STRUCT = [
+  {q:`The talented young engineer from Jakarta presented her system to the panel.`, a:"Simple", why:`Panjang, tapi hanya satu klausa (satu subjek+verb) → simple.`},
+  {q:`She prepared well, and she got the job.`, a:"Compound", why:`Dua klausa bebas setara dihubung FANBOYS "and" → compound.`},
+  {q:`Because he prepared well, he got the job.`, a:"Complex", why:`Satu dependent ("Because…") + satu independent → complex.`},
+  {q:`Although the test was hard, she passed it, and she felt proud.`, a:"Compound-Complex", why:`1 dependent ("Although…") + 2 independent ("she passed it" + "she felt proud") → compound-complex.`},
+  {q:`The HR round was easy; the technical round was hard.`, a:"Compound", why:`Dua klausa bebas dihubung semicolon → compound.`},
+  {q:`The candidate who built RAG systems impressed the panel.`, a:"Complex", why:`Independent + relative clause "who built RAG systems" → complex.`}
+];
+const STRUCT_OPTS = ["Simple","Compound","Complex","Compound-Complex"];
+
+const Q_TENSE = [
+  {q:`She ___ here for six months. (durasi, masih berlangsung)`, opts:["has been working","worked","will work","is working"], a:0, why:`Mulai di masa lampau & masih berlangsung + durasi "for" → Present Perfect Continuous.`},
+  {q:`By next year, she ___ the project. (selesai sebelum titik nanti)`, opts:["will complete","will have completed","completes","has completed"], a:1, why:`Akan selesai sebelum titik di masa depan → Future Perfect: will have + V3.`},
+  {q:`She ___ when the call came. (sedang berlangsung di titik lampau)`, opts:["worked","works","was working","had worked"], a:2, why:`Sedang berlangsung pada titik tertentu di masa lampau → Past Continuous.`},
+  {q:`She ___ the task before the meeting started. (selesai sebelum aksi lampau lain)`, opts:["finished","had finished","has finished","finishes"], a:1, why:`Selesai sebelum aksi lampau lain → Past Perfect: had + V3.`}
+];
+
+const Q_COND = [
+  {s:`If you heat water, it boils.`, a:"0", why:`Fakta yang selalu benar → Type 0.`},
+  {s:`If you prepare well, you will pass the interview.`, a:"1", why:`Kemungkinan nyata di masa depan → Type 1.`},
+  {s:`If I had more time, I would build another project.`, a:"2", why:`Hipotetis, kenyataan sekarang tidak begitu → Type 2.`},
+  {s:`If I had studied, I would have passed.`, a:"3", why:`Penyesalan masa lampau yang tak bisa diubah → Type 3.`}
+];
+const COND_OPTS = ["0","1","2","3"];
+
+/* =================== STATE =================== */
+const store = {
+  get(){ try{return JSON.parse(localStorage.getItem("parser_done")||"{}")}catch(e){return {}} },
+  set(o){ localStorage.setItem("parser_done",JSON.stringify(o)) },
+  mark(id){ const o=this.get(); o[id]=true; this.set(o); updateProgress(); }
+};
+let TOTAL_Q = 0;
+function updateProgress(){
+  const done = Object.keys(store.get()).length;
+  document.getElementById("progressPill").textContent = `${done} / ${TOTAL_Q} latihan`;
+}
+function toast(msg){
+  const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),1900);
+}
+
+/* =================== HERO PARSER =================== */
+const sentSwitch=document.getElementById("sentSwitch");
+const sentBox=document.getElementById("sentBox");
+const readout=document.getElementById("readout");
+let curSent=0;
+
+function renderLegend(){
+  const el=document.getElementById("legend"); el.innerHTML="";
+  Object.entries(POS).forEach(([k,v])=>{
+    const c=document.createElement("span");
+    c.className="chip"; c.style.setProperty("--c",`var(--pos-${k})`);
+    c.innerHTML=`<span class="sw"></span>${v.label}`;
+    el.appendChild(c);
+  });
+}
+function renderSentence(i){
+  curSent=i; sentBox.innerHTML="";
+  SENTENCES[i].tokens.forEach(tok=>{
+    // token may be [word, pos] or [word, trailing, pos]
+    let word=tok[0], pos, trail="";
+    if(tok.length===3){ trail=tok[1]; pos=tok[2]; } else { pos=tok[1]; }
+    if(!pos){ sentBox.appendChild(document.createTextNode(word+" ")); return; }
+    const s=document.createElement("span");
+    s.className=`w pos-${pos}`; s.textContent=word; s.tabIndex=0;
+    s.setAttribute("role","button");
+    s.setAttribute("aria-label",`${word} — ${POS[pos].label}`);
+    const act=()=>{
+      document.querySelectorAll(".sent .w.pinned").forEach(e=>e.classList.remove("pinned"));
+      s.classList.add("pinned");
+      readout.classList.remove("empty");
+      readout.innerHTML=`<span class="badge" style="--c:var(--pos-${pos})">${POS[pos].label} · ${POS[pos].id}</span>
+        <span class="desc"><b>"${word}"</b> — ${POS[pos].desc}</span>`;
+    };
+    s.addEventListener("click",act);
+    s.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();act();}});
+    sentBox.appendChild(s);
+    sentBox.appendChild(document.createTextNode(trail+" "));
+  });
+  [...sentSwitch.children].forEach((b,bi)=>b.classList.toggle("active",bi===i));
+  readout.classList.add("empty");
+  readout.innerHTML=`<span class="desc">Klik / ketuk sebuah kata di atas untuk melihat part of speech-nya.</span>`;
+}
+SENTENCES.forEach((s,i)=>{
+  const b=document.createElement("button");
+  b.className="btn"; b.textContent=s.name; b.onclick=()=>renderSentence(i);
+  sentSwitch.appendChild(b);
+});
+renderLegend(); renderSentence(0);
+
+/* =================== POS LESSONS =================== */
+const posWrap=document.getElementById("posLessons");
+POS_LESSONS.forEach((l,i)=>{
+  const d=document.createElement("details");
+  d.className="acc"; d.style.setProperty("--c",`var(--pos-${l.key})`);
+  if(i===0) d.open=true;
+  d.innerHTML=`<summary><span class="mk">${String(i+1).padStart(2,"0")}</span>
+    ${POS[l.key].label} <span style="font-weight:400;color:var(--ink-soft);font-family:var(--f-body);font-size:15px">· ${POS[l.key].id}</span>
+    <span class="ar">›</span></summary><div class="body">${l.body}</div>`;
+  posWrap.appendChild(d);
+});
+
+/* =================== SENTENCE TYPES =================== */
+const stWrap=document.getElementById("sentTypes");
+SENT_TYPES.forEach(t=>{
+  const c=document.createElement("div"); c.className="card";
+  c.innerHTML=`<span class="chip" style="--c:${t.c}"><span class="sw"></span>${t.name}</span>
+    <div class="formula" style="margin:12px 0 8px">${t.formula}</div>
+    <p style="margin:.3em 0">${t.desc}</p><p style="margin:.4em 0 0">${t.ex}</p>`;
+  stWrap.appendChild(c);
+});
+
+/* =================== PHRASE LESSONS =================== */
+const phWrap=document.getElementById("phraseLessons");
+PHRASE_LESSONS.forEach((l,i)=>{
+  const d=document.createElement("details");
+  d.className="acc"; d.style.setProperty("--c",`var(--pos-${l.key})`);
+  if(i===0) d.open=true;
+  d.innerHTML=`<summary><span class="mk">${String(i+1).padStart(2,"0")}</span>
+    ${l.title} <span style="font-weight:400;color:var(--ink-soft);font-family:var(--f-body);font-size:15px">· ${l.sub}</span>
+    <span class="ar">›</span></summary><div class="body">${l.body}</div>`;
+  phWrap.appendChild(d);
+});
+
+/* =================== PHRASE TABLE =================== */
+const ptb=document.getElementById("phraseTable");
+PHRASES.forEach(p=>{
+  const tr=document.createElement("tr");
+  tr.innerHTML=`<td><b>${p[0]}</b></td><td><span class="chip" style="--c:var(--pos-${p[1]});padding:2px 7px;font-size:11.5px"><span class="sw"></span>${p[1]}</span></td><td>${p[2]}</td><td class="ex">${p[3]}</td>`;
+  ptb.appendChild(tr);
+});
+
+/* =================== TENSE GRID =================== */
+const tg=document.getElementById("tenseGrid");
+const heads=["Present","Past","Future"];
+// build 4 rows (aspects) x 3 cols, but data is ordered present(4),past(4),future(4)
+const aspects=["Simple","Continuous","Perfect","Perfect Cont."];
+// place header row
+tg.innerHTML=`<div class="tcell head">Aspek ↓ / Waktu →</div>`+heads.map(h=>`<div class="tcell head">${h}</div>`).join("");
+aspects.forEach((asp,r)=>{
+  tg.innerHTML+=`<div class="tcell head" style="font-size:12px">${asp}</div>`;
+  [0,1,2].forEach(col=>{
+    const idx=col*4+r;
+    const [nm,form,ex]=TENSES[idx];
+    const cell=document.createElement("div");
+    cell.className="tcell";
+    cell.innerHTML=`<div class="nm">${nm}</div><div class="form">${form}</div><div class="ex">${ex}</div>`;
+    cell.onclick=()=>toast(`${nm}: ${form}`);
+    tg.appendChild(cell);
+  });
+});
+
+/* =================== VOICE FLIPS =================== */
+const vf=document.getElementById("voiceFlips");
+VOICE.forEach(v=>{
+  const f=document.createElement("div"); f.className="flip"; f.tabIndex=0; f.setAttribute("role","button");
+  f.setAttribute("aria-label","Klik untuk membalik active ke passive");
+  f.innerHTML=`<div class="flip-in">
+    <div class="flip-face flip-front"><span class="tag">Active</span><span class="txt">${v.a}</span></div>
+    <div class="flip-face flip-back"><span class="tag">Passive</span><span class="txt">${v.p}</span><small>S + be + V3 + by …</small></div>
+  </div>`;
+  const toggle=()=>f.classList.toggle("on");
+  f.onclick=toggle;
+  f.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle();}});
+  vf.appendChild(f);
+});
+
+/* =================== GRAMMAR NAV =================== */
+const gnav=document.getElementById("grammarNav");
+[["Tenses","g-tenses"],["Voice","g-voice"],["Conditional","g-cond"]].forEach(([t,id])=>{
+  const a=document.createElement("a"); a.href="#"+id; a.className="btn"; a.textContent=t;
+  a.style.textDecoration="none"; gnav.appendChild(a);
+});
+
+/* =================== CONDITIONAL MATCHER =================== */
+const cm=document.getElementById("condMatch");
+Q_COND.forEach((q,i)=>{
+  const row=document.createElement("div"); row.className="match-q";
+  const opts=COND_OPTS.map(o=>`<button class="mbtn" data-v="${o}">Type ${o}</button>`).join("");
+  row.innerHTML=`<div class="s">${q.s}</div><div class="match-opts">${opts}</div><div class="explain" style="margin-top:10px"></div>`;
+  cm.appendChild(row);
+  const exp=row.querySelector(".explain");
+  row.querySelectorAll(".mbtn").forEach(btn=>{
+    btn.onclick=()=>{
+      if(row.dataset.done) return;
+      const correct=btn.dataset.v===q.a;
+      btn.classList.add(correct?"correct":"wrong");
+      if(correct){
+        row.dataset.done="1";
+        row.querySelectorAll(".mbtn").forEach(b=>b.disabled=true);
+        exp.textContent="✓ "+q.why; exp.classList.add("show");
+        store.mark("cond"+i); toast("Benar! +1");
+      } else {
+        exp.textContent="Coba lagi — perhatikan tense di if-clause."; exp.classList.add("show");
+      }
+    };
+  });
+  TOTAL_Q++;
+});
+
+/* =================== GENERIC MCQ QUIZ =================== */
+function buildQuiz(mountId, items, optionFn, idPrefix, twoCol){
+  const mount=document.getElementById(mountId);
+  let idx=0, score=0;
+  const wrap=document.createElement("div");
+  mount.appendChild(wrap);
+  TOTAL_Q += items.length;
+
+  function render(){
+    const it=items[idx];
+    const opts=optionFn(it); // [{label,value}]
+    wrap.innerHTML=`
+      <div class="quiz-head"><span class="quiz-meta">Soal ${idx+1} / ${items.length}</span><span class="quiz-meta">Skor ${score}</span></div>
+      <p class="quiz-q">${it.q || it.s}</p>
+      <div class="opts ${twoCol?'two':''}"></div>
+      <div class="explain"></div>
+      <div class="quiz-foot">
+        <div class="bar"><i style="width:${(idx)/items.length*100}%"></i></div>
+        <button class="btn next" disabled>Lanjut →</button>
+      </div>`;
+    const optsEl=wrap.querySelector(".opts");
+    const exp=wrap.querySelector(".explain");
+    const next=wrap.querySelector(".next");
+    const correctVal = it.a;
+    opts.forEach((o,oi)=>{
+      const b=document.createElement("button");
+      b.className="opt"; b.innerHTML=`<span class="key">${String.fromCharCode(65+oi)}</span><span>${o.label}</span>`;
+      b.onclick=()=>{
+        optsEl.querySelectorAll(".opt").forEach(x=>x.disabled=true);
+        const chosen=o.value;
+        const ok = chosen===correctVal;
+        if(ok){ b.classList.add("correct"); score++; store.mark(idPrefix+idx); toast("Benar! +1"); }
+        else {
+          b.classList.add("wrong");
+          // highlight correct
+          opts.forEach((oo,j)=>{ if(oo.value===correctVal) optsEl.children[j].classList.add("correct"); });
+        }
+        exp.innerHTML=(ok?"✓ ":"✗ ")+it.why;
+        exp.classList.add("show");
+        next.disabled=false; next.focus();
+      };
+      optsEl.appendChild(b);
+    });
+    next.onclick=()=>{
+      if(idx<items.length-1){ idx++; render(); }
+      else {
+        wrap.innerHTML=`<div style="text-align:center;padding:18px 0">
+          <h3 style="font-size:22px">Selesai — skor ${score} / ${items.length}</h3>
+          <p class="muted">${score===items.length?"Sempurna. Pola tertangkap. 🎯":"Bagus. Ulangi yang salah untuk memantapkan."}</p>
+          <button class="btn primary retry">Ulangi</button></div>`;
+        wrap.querySelector(".retry").onclick=()=>{idx=0;score=0;render();};
+      }
+    };
+  }
+  render();
+}
+
+// POS quiz — options are 4 POS keys incl. the answer
+function posOptions(it){
+  const all=Object.keys(POS);
+  const wrong=all.filter(k=>k!==it.a).sort(()=>Math.random()-.5).slice(0,3);
+  const set=[...wrong,it.a].sort(()=>Math.random()-.5);
+  return set.map(k=>({label:POS[k].label,value:k}));
+}
+buildQuiz("quiz-pos", Q_POS, posOptions, "qpos", true);
+buildQuiz("quiz-struktur", Q_STRUCT, ()=>STRUCT_OPTS.map(o=>({label:o,value:o})), "qstr", true);
+buildQuiz("quiz-tense", Q_TENSE, it=>it.opts.map((o,i)=>({label:o,value:i})), "qtns", false);
+
+updateProgress();
+
+/* =================== SCROLLSPY (active nav) =================== */
+(function(){
+  const ids=["part-of-speech","struktur","frasa","klausa","grammar"];
+  const topLinks={}, botLinks={};
+  document.querySelectorAll(".top nav a").forEach(a=>{ const id=a.getAttribute("href").slice(1); topLinks[id]=a; });
+  document.querySelectorAll(".bottomnav a").forEach(a=>{ botLinks[a.dataset.sec]=a; });
+  function setActive(id){
+    ids.forEach(s=>{
+      topLinks[s]&&topLinks[s].classList.toggle("active",s===id);
+      botLinks[s]&&botLinks[s].classList.toggle("active",s===id);
+    });
+  }
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting) setActive(e.target.id); });
+  },{rootMargin:"-45% 0px -50% 0px",threshold:0});
+  ids.forEach(id=>{ const el=document.getElementById(id); if(el) obs.observe(el); });
+})();
+</script>
+</body>
+</html>
