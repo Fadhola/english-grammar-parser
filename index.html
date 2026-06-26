@@ -289,9 +289,9 @@
     .bottomnav a{
       flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
       text-decoration:none;color:var(--ink-soft);font-family:var(--f-display);
-      font-size:10.5px;font-weight:500;padding:6px 2px;border-radius:10px;min-height:46px;justify-content:center;
+      font-size:9.5px;font-weight:500;padding:6px 1px;border-radius:9px;min-height:46px;justify-content:center;white-space:nowrap;
     }
-    .bottomnav a svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.9}
+    .bottomnav a svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.9}
     .bottomnav a.active{color:var(--brand);background:var(--brand-soft)}
     /* free the top bar on mobile: drop inline section links */
     .top nav{display:none}
@@ -335,6 +335,36 @@
     .opt{min-height:44px}
     .tcell .form{font-size:12px}
   }
+
+  /* ---------- Annotated sentences (subject / verb / object …) ---------- */
+  .ann{display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px 8px;
+    font-family:var(--f-body);font-size:19px;line-height:1.3;margin:14px 0 6px;
+    padding:6px 0;}
+  .ann .plain{align-self:flex-end;padding-bottom:1px}
+  .ann .tok{display:inline-flex;flex-direction:column;gap:3px;align-items:flex-start}
+  .ann .tok .lab{font-family:var(--f-mono);font-size:8.5px;font-weight:600;letter-spacing:.05em;
+    text-transform:uppercase;color:var(--rc,#888);white-space:nowrap;line-height:1}
+  .ann .tok .wd{border-bottom:2.5px solid var(--rc,#888);padding-bottom:1px;white-space:nowrap}
+  .role-legend{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}
+  .role-legend .chip{font-size:11.5px;padding:3px 8px}
+  .ann-note{font-size:13.5px;color:var(--ink-soft);font-family:var(--f-mono);margin:2px 0 0}
+
+  /* ---------- Vocabulary section ---------- */
+  .ba{display:grid;gap:12px;margin:10px 0}
+  @media(min-width:680px){.ba{grid-template-columns:1fr 1fr}}
+  .ba .col{border:1px solid var(--line);border-radius:11px;padding:14px 16px}
+  .ba .you{background:#fdeef2;border-color:#f3c9d4}
+  .ba .up{background:#e9f9ef;border-color:#bfe7cd}
+  .ba .tagx{font-family:var(--f-mono);font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:6px}
+  .ba .you .tagx{color:#b3244c}.ba .up .tagx{color:#0c7a3a}
+  .ba .txt{font-style:italic;font-size:15.5px;line-height:1.5}
+  .vchip{display:inline-block;font-family:var(--f-mono);font-size:12.5px;background:var(--brand-soft);
+    border:1px solid #d9d8f7;color:var(--brand);border-radius:7px;padding:3px 9px;margin:3px 4px 3px 0}
+  .vgrid{display:grid;gap:7px}
+  @media(min-width:560px){.vgrid.c3{grid-template-columns:1fr 1fr 1fr}.vgrid.c2{grid-template-columns:1fr 1fr}}
+  .vcard{border:1px solid var(--line-soft);border-radius:10px;padding:11px 13px;background:#fbfbfd}
+  .vcard b{font-family:var(--f-display)}
+  .vcard .m{display:block;color:var(--ink-soft);font-size:13.5px;margin-top:2px}
 </style>
 </head>
 <body>
@@ -349,6 +379,7 @@
       <a href="#frasa">Frasa</a>
       <a href="#klausa">Klausa</a>
       <a href="#grammar">Grammar</a>
+      <a href="#vocab">Vocabulary</a>
     </nav>
     <span class="progress-pill" id="progressPill">0 / 0 latihan</span>
   </div>
@@ -381,6 +412,7 @@
       <a href="#frasa"><span class="n">03</span><span class="t">Frasa</span></a>
       <a href="#klausa"><span class="n">04</span><span class="t">Klausa</span></a>
       <a href="#grammar"><span class="n">05</span><span class="t">Grammar</span></a>
+      <a href="#vocab"><span class="n">06</span><span class="t">Vocabulary</span></a>
     </div>
   </section>
 
@@ -403,9 +435,17 @@
   <section id="struktur">
     <p class="eyebrow">Bagian 02</p>
     <h2 class="sec">Struktur Kalimat</h2>
-    <p class="sec-lead">Empat jenis kalimat dibedakan dari <em>berapa</em> dan <em>jenis</em> klausa yang dipakai. Klausa bebas berdiri sendiri; klausa terikat menggantung.</p>
+    <p class="sec-lead">Empat jenis kalimat dibedakan dari <em>berapa</em> dan <em>jenis</em> klausa yang dipakai. Tapi sebelum itu — kamu harus bisa menunjuk <b>mana subjek, mana verb, mana objek</b> dalam satu kalimat. Itu dulu.</p>
 
-    <div class="grid cols-2" id="sentTypes"></div>
+    <div class="card">
+      <h3>Anatomi Kalimat — Bedah Dulu</h3>
+      <p style="margin-top:2px">Tiap kalimat punya "kerangka". Minimal: <b>subjek</b> (pelaku) + <b>verb</b> (aksi/keadaan). Sering ditambah <b>objek</b> (penerima aksi) dan <b>keterangan</b> (kapan/bagaimana/di mana). Lihat warna labelnya:</p>
+      <div class="role-legend" id="roleLegend"></div>
+      <div id="annAnatomy"></div>
+      <blockquote><b>Cara cepat cari verb:</b> tanya <em>"apa yang dilakukan / apa keadaannya?"</em> → itu verb-nya. <b>Cari subjek:</b> tanya <em>"siapa/apa yang melakukannya?"</em> → itu subjeknya. Latih ini di tiap contoh di bawah.</blockquote>
+    </div>
+
+    <div id="sentLessons"></div>
 
     <div class="card" style="margin-top:6px">
       <div class="quiz-head"><h3>Latihan: Klasifikasi Kalimat</h3></div>
@@ -436,21 +476,30 @@
   <section id="klausa">
     <p class="eyebrow">Bagian 04</p>
     <h2 class="sec">Klausa (Clause)</h2>
-    <p class="sec-lead">Sekelompok kata yang memiliki subjek <b>dan</b> verb. Bisa berdiri sendiri (independent) atau menggantung karena kata penghubung (dependent).</p>
+    <p class="sec-lead">Sekelompok kata yang memiliki subjek <b>dan</b> verb. Bisa berdiri sendiri (independent) atau menggantung karena kata penghubung (dependent). Inilah "bahan baku" yang dipakai untuk membentuk 4 jenis kalimat di Bagian 02.</p>
 
     <div class="grid cols-2">
       <div class="card">
         <span class="chip" style="--c:var(--pos-verb)"><span class="sw"></span>Independent</span>
         <h3 style="margin-top:10px">Klausa Bebas</h3>
-        <p class="muted" style="margin-top:0">Bisa berdiri sendiri sebagai kalimat lengkap. Subjek + verb + makna utuh.</p>
-        <p class="ex">Fadhola got the job. · She built a RAG system.</p>
+        <p style="margin-top:0">Bisa berdiri sendiri sebagai kalimat lengkap. Punya subjek + verb + makna yang utuh — tidak menggantung. Setiap <b>simple sentence</b> sebenarnya adalah satu independent clause.</p>
+        <div id="annIndep"></div>
+        <p class="muted" style="margin:6px 0 0">Cek: bisakah dijadikan kalimat utuh dengan titik di belakangnya? Kalau ya → independent.</p>
       </div>
       <div class="card">
-        <span class="chip" style="--c:var(--pos-conjunction)"><span class="sw"></span>Dependent</span>
+        <span class="chip" style="--c:var(--pos-pronoun)"><span class="sw"></span>Dependent</span>
         <h3 style="margin-top:10px">Klausa Terikat</h3>
-        <p class="muted" style="margin-top:0">Punya subjek + verb, tapi diawali penghubung yang membuatnya menggantung. Butuh induk.</p>
-        <p class="ex">…because he prepared well · …who built RAG systems</p>
+        <p style="margin-top:0">Punya subjek + verb juga, <b>tapi</b> diawali kata penghubung (because, although, when, if…) atau relative pronoun (who, which, that) yang membuatnya menggantung. Ia butuh induk untuk jadi lengkap.</p>
+        <div id="annDep"></div>
+        <p class="muted" style="margin:6px 0 0">Diucapkan sendirian terasa "lalu apa?" — itulah tanda dependent.</p>
       </div>
+    </div>
+
+    <div class="card">
+      <h3>Kenapa "because" Bikin Menggantung?</h3>
+      <p style="margin-top:2px">Perhatikan: <span class="ex">"he prepared well"</span> bisa berdiri sendiri (independent). Tapi begitu ditambah <span class="ex">"because"</span> di depannya, ia langsung menggantung:</p>
+      <div id="annWhyDep"></div>
+      <blockquote>Kata penghubung subordinatif (because, although, when, since…) "mengikat" klausa ke klausa lain. Itu sebabnya dependent clause selalu butuh teman.</blockquote>
     </div>
 
     <div class="card">
@@ -458,25 +507,18 @@
       <table>
         <thead><tr><th>Jenis</th><th>Fungsi</th><th>Contoh</th></tr></thead>
         <tbody>
-          <tr><td><b>Noun clause</b></td><td>sebagai noun (subjek/objek)</td><td class="ex">I know <b>that he passed</b>.</td></tr>
-          <tr><td><b>Adjective (relative)</b></td><td>menerangkan noun</td><td class="ex">The man <b>who called</b> is here.</td></tr>
-          <tr><td><b>Adverbial</b></td><td>menerangkan verb (kapan/kenapa)</td><td class="ex">I left <b>when it ended</b>.</td></tr>
+          <tr><td><b>Noun clause</b></td><td>berperan sebagai noun (subjek/objek)</td><td class="ex">I know <b>that he passed</b>.</td></tr>
+          <tr><td><b>Adjective (relative)</b></td><td>menerangkan noun di depannya</td><td class="ex">The man <b>who called</b> is here.</td></tr>
+          <tr><td><b>Adverbial</b></td><td>menerangkan verb (kapan/kenapa/syarat)</td><td class="ex">I left <b>when it ended</b>.</td></tr>
         </tbody>
       </table>
-      <blockquote><span class="ex">"he prepared well"</span> bisa berdiri sendiri. Tambah <span class="ex">"because"</span> di depan → <span class="ex">"because he prepared well"</span> langsung menggantung. Penghubung itulah yang mengikat klausa.</blockquote>
     </div>
 
     <div class="card">
       <h3>Contoh Penggabungan Klausa</h3>
-      <table>
-        <thead><tr><th>Kombinasi</th><th>Hasil</th><th>Contoh</th></tr></thead>
-        <tbody>
-          <tr><td>Independent + Independent</td><td><b>Compound</b></td><td class="ex">She prepared well<b>, and</b> she got the job.</td></tr>
-          <tr><td>Independent + Dependent</td><td><b>Complex</b></td><td class="ex">She got the job <b>because she prepared well</b>.</td></tr>
-          <tr><td>2 Independent + 1 Dependent</td><td><b>Compound-Complex</b></td><td class="ex"><b>Although the test was hard,</b> she passed it<b>, and</b> she felt proud.</td></tr>
-        </tbody>
-      </table>
-      <blockquote><b>Frasa vs Klausa — pembeda kunci:</b> ada subjek + verb? <b>Tidak</b> → frasa (<span class="ex">in the office, very tired</span>). <b>Ya</b> → klausa (<span class="ex">she works, because she was tired</span>).</blockquote>
+      <p class="muted" style="margin-top:2px">Lihat bagaimana klausa bebas (biru-keabuan) dan klausa terikat (ungu) dirangkai jadi tiap jenis kalimat:</p>
+      <div id="annCombine"></div>
+      <blockquote style="margin-top:14px"><b>Frasa vs Klausa — pembeda kunci:</b> ada subjek + verb? <b>Tidak</b> → frasa (<span class="ex">in the office, very tired</span>). <b>Ya</b> → klausa (<span class="ex">she works, because she was tired</span>).</blockquote>
     </div>
   </section>
 
@@ -608,6 +650,208 @@
     </details>
   </section>
 
+  <!-- ============ 06 VOCABULARY ============ -->
+  <section id="vocab">
+    <p class="eyebrow">Bagian 06</p>
+    <h2 class="sec">Vocabulary</h2>
+    <p class="sec-lead">Bukan kamus. Ini cara menaikkan level vocab dari "bisa ngomong" jadi "ngomongnya pas dan natural" — fokus presisi, collocations, dan kontrol register (kasual ↔ formal). Banyak contoh diambil langsung dari essay-mu.</p>
+
+    <div class="card">
+      <h3>Cara Belajar Vocab yang Benar</h3>
+      <p style="margin-top:2px">Kalau caranya salah, sebanyak apa pun kata yang dihafal akan menguap. Tiga prinsip:</p>
+      <ol style="padding-left:22px">
+        <li style="margin:6px 0"><b>Belajar dalam CHUNK (gugus), bukan satuan.</b> Jangan hafal <span class="ex">"decision"</span>. Hafal chunk-nya: <span class="ex">make a decision · a tough decision · come to a decision</span>. Otak menyimpan bahasa sebagai gumpalan.</li>
+        <li style="margin:6px 0"><b>Pindahkan dari PASIF ke AKTIF.</b> Kamu paham banyak kata saat baca/nonton, tapi nggak keluar saat ngomong. Pakai kata itu dalam kalimat buatanmu sendiri <em>hari itu juga</em>.</li>
+        <li style="margin:6px 0"><b>Belajar yang RELEVAN.</b> Kata soal AI, interview, percakapan sehari-hari akan nempel karena dipakai tiap hari.</li>
+      </ol>
+      <blockquote><b>Aturan emas:</b> <em>Don't learn words. Learn how words are used.</em></blockquote>
+    </div>
+
+    <div class="card">
+      <h3>Bedah Essay Kamu — Upgrade Kata per Kata</h3>
+      <p class="muted" style="margin-top:2px">Kalimat asli dari essay-mu (kiri) vs versi upgrade (kanan). Bandingkan, rasakan bedanya.</p>
+      <div id="essayBreakdown"></div>
+    </div>
+
+    <details class="acc" open style="--c:var(--pos-conjunction)">
+      <summary><span class="mk">01</span>Collocations — Rahasia Kedengeran Natural<span class="ar">›</span></summary>
+      <div class="body">
+        <p><b>Collocation</b> = kata-kata yang "berjodoh" dan biasa muncul bersama. Salah pasangan = aneh walau grammar benar.</p>
+        <p>❌ <span class="ex">do a decision</span> · ✅ <span class="ex">make a decision</span> &nbsp;|&nbsp; ❌ <span class="ex">say a joke</span> · ✅ <span class="ex">tell a joke</span></p>
+        <h4>MAKE vs DO (paling sering salah)</h4>
+        <table><thead><tr><th>MAKE + (menciptakan)</th><th>DO + (tugas/aktivitas)</th></tr></thead><tbody>
+          <tr><td>make a decision</td><td>do homework</td></tr>
+          <tr><td>make a mistake</td><td>do research</td></tr>
+          <tr><td>make progress</td><td>do a favor</td></tr>
+          <tr><td>make an effort</td><td>do business</td></tr>
+          <tr><td>make sense</td><td>do your best</td></tr>
+          <tr><td>make a difference</td><td>do exercise</td></tr>
+        </tbody></table>
+        <h4>TAKE / HAVE / GET</h4>
+        <table><thead><tr><th>TAKE</th><th>HAVE</th><th>GET</th></tr></thead><tbody>
+          <tr><td>take a break</td><td>have a conversation</td><td>get a job</td></tr>
+          <tr><td>take a risk</td><td>have lunch</td><td>get used to</td></tr>
+          <tr><td>take responsibility</td><td>have trouble</td><td>get along with</td></tr>
+          <tr><td>take notes</td><td>have an idea</td><td>get better</td></tr>
+        </tbody></table>
+        <h4>Dunia Kerja / Tech (relevan buatmu)</h4>
+        <table><thead><tr><th>Collocation</th><th>Arti</th></tr></thead><tbody>
+          <tr><td>meet a deadline</td><td>memenuhi tenggat</td></tr>
+          <tr><td>gain experience</td><td>mendapat pengalaman</td></tr>
+          <tr><td>build a system / pipeline</td><td>membangun sistem</td></tr>
+          <tr><td>deploy to production</td><td>rilis ke produksi</td></tr>
+          <tr><td>contribute to a project</td><td>berkontribusi ke proyek</td></tr>
+          <tr><td>keep up with technology</td><td>mengikuti perkembangan teknologi</td></tr>
+        </tbody></table>
+      </div>
+    </details>
+
+    <details class="acc" style="--c:var(--pos-adverb)">
+      <summary><span class="mk">02</span>Buang Kata Lemah, Ganti yang Presisi<span class="ar">›</span></summary>
+      <div class="body">
+        <h4>"GOOD" — kata paling membosankan</h4>
+        <table><thead><tr><th>Konteks</th><th>Ganti dengan</th></tr></thead><tbody>
+          <tr><td>good food</td><td>delicious, tasty</td></tr>
+          <tr><td>good idea</td><td>brilliant, solid, clever</td></tr>
+          <tr><td>good person</td><td>kind, decent, thoughtful</td></tr>
+          <tr><td>good skill</td><td>strong, impressive, sharp</td></tr>
+        </tbody></table>
+        <h4>"VERY + adjective" → satu kata kuat</h4>
+        <table><thead><tr><th>very + …</th><th>Satu kata</th></tr></thead><tbody>
+          <tr><td>very tired</td><td>exhausted</td></tr>
+          <tr><td>very big</td><td>huge / massive</td></tr>
+          <tr><td>very happy</td><td>thrilled / delighted</td></tr>
+          <tr><td>very angry</td><td>furious</td></tr>
+          <tr><td>very important</td><td>crucial / essential</td></tr>
+          <tr><td>very hard</td><td>tough / challenging</td></tr>
+        </tbody></table>
+        <h4>"GET" — variasikan</h4>
+        <p><span class="vchip">get a job → land a job</span><span class="vchip">get better → improve</span><span class="vchip">get an idea → come up with an idea</span><span class="vchip">get information → gather information</span><span class="vchip">get the point → grasp the point</span></p>
+        <h4>"THING / STUFF"</h4>
+        <p><span class="vchip">a thing to do → a task / an errand</span><span class="vchip">some stuff happened → an issue arose</span></p>
+      </div>
+    </details>
+
+    <details class="acc" style="--c:var(--pos-noun)">
+      <summary><span class="mk">03</span>Word Families &amp; jebakan -ed / -ing<span class="ar">›</span></summary>
+      <div class="body">
+        <p>Satu akar kata → banyak bentuk. Belajar satu keluarga = 4 kata sekaligus. (Nyambung ke materi sufiks di Bagian 01.)</p>
+        <table><thead><tr><th>Verb</th><th>Noun</th><th>Adjective</th><th>Adverb</th></tr></thead><tbody>
+          <tr><td>decide</td><td>decision</td><td>decisive</td><td>decisively</td></tr>
+          <tr><td>succeed</td><td>success</td><td>successful</td><td>successfully</td></tr>
+          <tr><td>create</td><td>creation/creativity</td><td>creative</td><td>creatively</td></tr>
+          <tr><td>analyze</td><td>analysis</td><td>analytical</td><td>analytically</td></tr>
+          <tr><td>communicate</td><td>communication</td><td>communicative</td><td>—</td></tr>
+          <tr><td>achieve</td><td>achievement</td><td>achievable</td><td>—</td></tr>
+        </tbody></table>
+        <h4>⚠️ Beda -ed vs -ing (kamu perlu ini!)</h4>
+        <ul>
+          <li><b>-ed</b> = perasaan SIAPA (subjek merasa): <span class="ex">I am <b>frustrated</b>.</span> (aku yang merasa)</li>
+          <li><b>-ing</b> = penyebabnya APA: <span class="ex">The situation is <b>frustrating</b>.</span> (situasinya yang bikin frustrasi)</li>
+        </ul>
+        <blockquote class="warn">❌ <span class="ex">"I am very boring"</span> (= kamu membosankan!) → ✅ <span class="ex">"I am <b>bored</b>"</span>. Pasangan lain: interested/interesting · excited/exciting · confused/confusing · surprised/surprising.</blockquote>
+      </div>
+    </details>
+
+    <details class="acc" style="--c:var(--pos-pronoun)">
+      <summary><span class="mk">04</span>Vocab per Topik<span class="ar">›</span></summary>
+      <div class="body">
+        <h4>Perasaan &amp; Opini</h4>
+        <p><b>Frustrasi:</b> <span class="ex">It drives me crazy · It gets on my nerves · It bugs me</span></p>
+        <p><b>Opini (variasi dari "I think"):</b> <span class="ex">The way I see it · If you ask me · Personally, I feel… · From my perspective</span></p>
+        <p><b>Ragu:</b> <span class="ex">I'm not entirely sure · It's hard to say · Off the top of my head…</span></p>
+        <h4>Percakapan Sehari-hari</h4>
+        <div class="vgrid c2">
+          <div class="vcard"><b>to be honest</b><span class="m">sejujurnya</span></div>
+          <div class="vcard"><b>no big deal</b><span class="m">bukan masalah besar</span></div>
+          <div class="vcard"><b>it's up to you</b><span class="m">terserah kamu</span></div>
+          <div class="vcard"><b>long story short</b><span class="m">singkatnya</span></div>
+          <div class="vcard"><b>fair enough</b><span class="m">ya udah, masuk akal</span></div>
+          <div class="vcard"><b>I'll figure it out</b><span class="m">nanti aku cari caranya</span></div>
+        </div>
+        <h4>Interview &amp; Profesional (buat job hunting)</h4>
+        <p><b>Pengalaman:</b> <span class="ex">I was responsible for… · I have hands-on experience with… · I led / built / implemented… · I collaborated closely with…</span></p>
+        <p><b>Skill:</b> <span class="ex">I'm proficient in… · I have a solid background in… · I'm adept at… · I'm passionate about…</span></p>
+        <p><b>Sifat profesional:</b> <span class="vchip">detail-oriented</span><span class="vchip">self-motivated</span><span class="vchip">adaptable</span><span class="vchip">proactive</span><span class="vchip">versatile</span><span class="vchip">results-driven</span></p>
+        <p><b>Saat nggak tahu jawaban (tetap pro):</b> <span class="ex">That's a great question · Let me think about that for a moment · I haven't worked with that directly, but I'm a fast learner.</span></p>
+        <h4>AI / Tech (duniamu)</h4>
+        <p><span class="vchip">implement</span><span class="vchip">deploy</span><span class="vchip">streamline</span><span class="vchip">scalable</span><span class="vchip">robust</span><span class="vchip">fine-tune</span><span class="vchip">integrate</span><span class="vchip">optimize</span><span class="vchip">leverage</span><span class="vchip">cutting-edge</span><span class="vchip">seamless</span><span class="vchip">end-to-end</span></p>
+        <blockquote>💡 Kata seperti <b>leverage, streamline, robust, seamless</b> bikin kamu kedengeran seperti engineer berpengalaman saat interview.</blockquote>
+      </div>
+    </details>
+
+    <details class="acc" style="--c:var(--pos-preposition)">
+      <summary><span class="mk">05</span>Phrasal Verbs<span class="ar">›</span></summary>
+      <div class="body">
+        <p>Verb + preposisi yang artinya berubah. Native pakai ini terus; tanpanya bahasamu terasa kaku.</p>
+        <h4>Sehari-hari</h4>
+        <table><thead><tr><th>Phrasal verb</th><th>Arti</th><th>Contoh</th></tr></thead><tbody>
+          <tr><td>figure out</td><td>memahami/memecahkan</td><td class="ex">I'll figure it out.</td></tr>
+          <tr><td>come up with</td><td>memunculkan ide</td><td class="ex">She came up with a plan.</td></tr>
+          <tr><td>deal with</td><td>menangani</td><td class="ex">I can deal with it.</td></tr>
+          <tr><td>get along with</td><td>akur dengan</td><td class="ex">I get along with my team.</td></tr>
+          <tr><td>end up</td><td>berakhir jadi</td><td class="ex">I ended up staying late.</td></tr>
+        </tbody></table>
+        <h4>Dunia kerja / tech</h4>
+        <p><span class="vchip">set up = menyiapkan</span><span class="vchip">carry out = melaksanakan</span><span class="vchip">roll out = meluncurkan</span><span class="vchip">scale up = memperbesar</span><span class="vchip">keep up with = mengikuti</span><span class="vchip">catch up on = mengejar ketinggalan</span></p>
+        <blockquote><b>Tips:</b> jangan hafal 100 sekaligus. Ambil 5 per minggu, pakai tiap hari.</blockquote>
+      </div>
+    </details>
+
+    <details class="acc" style="--c:var(--pos-determiner)">
+      <summary><span class="mk">06</span>Linking Words — biar nggak run-on<span class="ar">›</span></summary>
+      <div class="body">
+        <p>Ini langsung memperbaiki <b>run-on sentence</b> (kalimat nyambung terus tanpa jeda — kelihatan di Topik 1 essay-mu). Linking words memberi struktur.</p>
+        <table><thead><tr><th>Fungsi</th><th>Kata</th></tr></thead><tbody>
+          <tr><td>Menambah ide</td><td>also, in addition, moreover, on top of that</td></tr>
+          <tr><td>Kontras</td><td>however, although, even though, on the other hand, whereas</td></tr>
+          <tr><td>Sebab-akibat</td><td>because, since, therefore, as a result, that's why</td></tr>
+          <tr><td>Urutan/waktu</td><td>first, then, after that, meanwhile, eventually, finally</td></tr>
+          <tr><td>Contoh</td><td>for example, for instance, such as, namely</td></tr>
+          <tr><td>Menyimpulkan</td><td>in short, to sum up, overall, all in all</td></tr>
+        </tbody></table>
+        <h4>Perbaikan dari essay-mu</h4>
+        <div class="ba">
+          <div class="col you"><span class="tagx">Run-on</span><span class="txt">"i actually love english like i love speaking in english but i can't, i mean i'm not that fluent…"</span></div>
+          <div class="col up"><span class="tagx">Dirapikan</span><span class="txt">"I love English, and I love speaking it. <b>However</b>, I'm not quite fluent yet. <b>That's why</b> I'm taking a course now."</span></div>
+        </div>
+      </div>
+    </details>
+
+    <details class="acc" style="--c:var(--pos-interjection)">
+      <summary><span class="mk">07</span>Idiom &amp; Ungkapan Natural<span class="ar">›</span></summary>
+      <div class="body">
+        <table><thead><tr><th>Idiom</th><th>Arti</th></tr></thead><tbody>
+          <tr><td>a piece of cake</td><td>sangat mudah</td></tr>
+          <tr><td>hit the books</td><td>belajar serius</td></tr>
+          <tr><td>on the same page</td><td>sepaham</td></tr>
+          <tr><td>think outside the box</td><td>berpikir kreatif</td></tr>
+          <tr><td>get the hang of it</td><td>mulai terbiasa</td></tr>
+          <tr><td>cut to the chase</td><td>langsung ke inti</td></tr>
+          <tr><td>call it a day</td><td>sudahi kerjaan</td></tr>
+        </tbody></table>
+        <blockquote class="warn">⚠️ Idiom itu bumbu, bukan makanan utama. Pakai 1-2 per percakapan. Yang dipaksakan justru terdengar aneh.</blockquote>
+      </div>
+    </details>
+
+    <div class="card">
+      <div class="quiz-head"><h3>Latihan: Pilih Kata yang Tepat</h3></div>
+      <p class="muted" style="margin:2px 0 0">Collocation, register, dan jebakan -ed/-ing.</p>
+      <div id="quiz-vocab"></div>
+    </div>
+
+    <div class="card" style="background:linear-gradient(180deg,#fff,#fbfbfd)">
+      <h3>Cara Praktik (15–20 menit/hari)</h3>
+      <ol style="padding-left:22px">
+        <li style="margin:6px 0">Pilih <b>5–7 chunk</b> per minggu dari sini (bukan kata satuan).</li>
+        <li style="margin:6px 0">Buat <b>1 kalimat sendiri</b> tiap chunk, soal hidupmu hari itu. <span class="ex">"land a job" → "I'm trying to land a job as an AI Engineer in Jakarta."</span></li>
+        <li style="margin:6px 0"><b>Output paksa:</b> rekam dirimu ngomong 1–2 menit pakai chunk minggu itu. Speaking kelemahanmu — ini latihannya.</li>
+        <li style="margin:6px 0"><b>Spaced repetition:</b> review chunk minggu lalu tiap beberapa hari (Anki kalau mau sistematis).</li>
+      </ol>
+      <blockquote>Kamu sudah punya pondasi kuat — vocab pasifmu besar. Yang kurang cuma <b>jembatan dari paham → keluar saat ngomong</b>. Jembatan itu dibangun dengan <b>output harian</b>. Kejar "pakai kata yang sudah kamu tahu dengan tepat" — itu beda B1 dan B2. 🚀</blockquote>
+    </div>
+  </section>
+
   <section style="padding-top:48px">
     <div class="card" style="background:linear-gradient(180deg,#fff,#fbfbfd)">
       <p class="eyebrow">🎯 Penutup</p>
@@ -634,6 +878,7 @@
   <a href="#frasa" data-sec="frasa" aria-label="Frasa"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="9" width="16" height="6" rx="2"/></svg>Frasa</a>
   <a href="#klausa" data-sec="klausa" aria-label="Klausa"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="8" height="5" rx="1.5"/><rect x="13" y="13" width="8" height="5" rx="1.5"/><path d="M7 11v3a2 2 0 0 0 2 2h4" stroke-linecap="round"/></svg>Klausa</a>
   <a href="#grammar" data-sec="grammar" aria-label="Grammar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><path d="M9 9h6M9 13h6M9 17h3" stroke-linecap="round"/></svg>Grammar</a>
+  <a href="#vocab" data-sec="vocab" aria-label="Vocabulary"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a1 1 0 0 1 1-1h6v16H5a1 1 0 0 1-1-1zM20 5a1 1 0 0 0-1-1h-6v16h6a1 1 0 0 0 1-1z" stroke-linejoin="round"/></svg>Vocab</a>
 </nav>
 
 <div class="toast" id="toast"></div>
@@ -899,19 +1144,115 @@ const POS_LESSONS = [
     <blockquote><b>many</b> + benda yang bisa dihitung (books, people, ideas); <b>much</b> + benda yang tidak bisa dihitung (water, time, information). Ragu? Pakai <b>a lot of</b> — aman untuk keduanya.</blockquote>`}
 ];
 
-const SENT_TYPES = [
-  {c:"var(--pos-noun)", name:"Simple", formula:"1 Independent Clause",
-   desc:"Satu klausa bebas: satu subjek + satu predikat, satu ide lengkap. \"Simple\" bukan berarti pendek.",
-   ex:`<span class="ex">Fadhola builds AI systems.</span><br><span class="muted">Subjek majemuk tetap simple: <span class="ex">She and her team launched the product.</span></span>`},
-  {c:"var(--pos-conjunction)", name:"Compound", formula:"Independent + (FANBOYS/;) + Independent",
-   desc:"Dua+ klausa bebas yang setara. Cek: kedua sisi penghubung bisa jadi kalimat utuh sendiri.",
-   ex:`<span class="ex">She prepared well<b>, and</b> she got the job.</span><br><span class="ex">The HR round was easy<b>; however,</b> the technical round was hard.</span>`},
-  {c:"var(--pos-verb)", name:"Complex", formula:"Independent + Dependent",
-   desc:"Satu klausa bebas + satu+ klausa terikat. Hubungan induk–anak. Dependent diawali because/when/who…",
-   ex:`<span class="ex"><b>Because he prepared well,</b> he got the job.</span><br><span class="muted">Dependent di depan → pakai koma. Di belakang → tanpa koma.</span>`},
-  {c:"var(--pos-adjective)", name:"Compound-Complex", formula:"2+ Independent + 1+ Dependent",
-   desc:"Gabungan: minimal dua klausa bebas DAN minimal satu klausa terikat.",
-   ex:`<span class="ex"><b>Because he prepared well,</b> he got the offer<b>, and</b> he started immediately.</span>`}
+/* ---- annotated-sentence engine (subject / verb / object / clause) ---- */
+const ROLE = {
+  subj:["SUBJEK","var(--pos-noun)"],
+  verb:["VERB","var(--pos-verb)"],
+  obj:["OBJEK","var(--pos-preposition)"],
+  comp:["PELENGKAP","var(--pos-adjective)"],
+  mod:["KETERANGAN","var(--pos-adverb)"],
+  conj:["PENGHUBUNG","var(--pos-conjunction)"],
+  indep:["KLAUSA BEBAS","#475569"],
+  dep:["KLAUSA TERIKAT","var(--pos-pronoun)"]
+};
+function annotate(tokens){
+  return `<div class="ann">`+tokens.map(t=>{
+    const [txt,role]=t;
+    if(!role) return `<span class="plain">${txt}</span>`;
+    const [lab,col]=ROLE[role];
+    return `<span class="tok" style="--rc:${col}"><span class="lab">${lab}</span><span class="wd">${txt}</span></span>`;
+  }).join("")+`</div>`;
+}
+
+const SENT_LESSONS = [
+  {c:"var(--pos-noun)", title:"Simple Sentence", sub:"Kalimat Sederhana", formula:"1 Independent Clause",
+   body:`<p><b>Definisi:</b> satu <b>klausa bebas</b> saja — satu subjek + satu verb, menyampaikan satu ide lengkap.</p>
+   ${annotate([["She and her team","subj"],["launched","verb"],["the product","obj"],[".",null]])}
+   <p class="muted">⚠️ Subjeknya boleh majemuk ("She and her team") tapi tetap <b>satu klausa</b> → tetap simple.</p>
+   <blockquote>"Simple" bukan berarti pendek. <span class="ex">"The talented young engineer from Jakarta confidently presented her RAG system to the panel of investors."</span> — panjang, tapi tetap simple karena cuma satu klausa.</blockquote>`},
+
+  {c:"var(--pos-conjunction)", title:"Compound Sentence", sub:"Majemuk Setara", formula:"Independent + penghubung + Independent",
+   body:`<p><b>Definisi:</b> dua atau lebih <b>klausa bebas</b> yang digabung. Masing-masing setara — sama-sama bisa berdiri sendiri.</p>
+   ${annotate([["She prepared well","indep"],[", and","conj"],["she got the job","indep"],[".",null]])}
+   <p class="muted">Cek: "She prepared well." ✓ utuh. "She got the job." ✓ utuh. Dua-duanya berdiri sendiri → compound.</p>
+   <h4>Apa itu FANBOYS?</h4>
+   <p><b>FANBOYS</b> = jembatan keledai (cara mengingat) untuk <b>7 coordinating conjunction</b> — kata penghubung yang menyambung dua hal setara. Tiap huruf = satu kata:</p>
+   <table><thead><tr><th>Huruf</th><th>Kata</th><th>Makna</th></tr></thead><tbody>
+     <tr><td><b>F</b></td><td>For</td><td>karena (sebab)</td></tr>
+     <tr><td><b>A</b></td><td>And</td><td>dan (menambah)</td></tr>
+     <tr><td><b>N</b></td><td>Nor</td><td>tidak juga (negatif berurutan)</td></tr>
+     <tr><td><b>B</b></td><td>But</td><td>tetapi (kontras)</td></tr>
+     <tr><td><b>O</b></td><td>Or</td><td>atau (pilihan)</td></tr>
+     <tr><td><b>Y</b></td><td>Yet</td><td>namun (kontras halus)</td></tr>
+     <tr><td><b>S</b></td><td>So</td><td>jadi (akibat)</td></tr>
+   </tbody></table>
+   <p class="muted">Hafal urutan F-A-N-B-O-Y-S, kamu langsung ingat ketujuh penghubung setara ini.</p>
+   <h4>3 Cara Menggabung Klausa Setara</h4>
+   <ol>
+     <li><b>Koma + FANBOYS:</b> <span class="ex">She prepared well<b>, and</b> she got the job.</span></li>
+     <li><b>Semicolon (;):</b> <span class="ex">She prepared well<b>;</b> she got the job.</span></li>
+     <li><b>Conjunctive adverb</b> (however, therefore, moreover) + <b>;</b> + koma: <span class="ex">She prepared well<b>; therefore,</b> she got the job.</span></li>
+   </ol>`},
+
+  {c:"var(--pos-verb)", title:"Complex Sentence", sub:"Majemuk Bertingkat", formula:"Independent + Dependent",
+   body:`<p><b>Definisi:</b> satu <b>klausa bebas</b> + satu/lebih <b>klausa terikat</b>. Ada hubungan induk–anak (tidak setara). Klausa terikat diawali subordinating conjunction (because, although, when, if…) atau relative pronoun (who, which, that).</p>
+   ${annotate([["Because he prepared well,","dep"],["he got the job","indep"],[".",null]])}
+   <p class="muted">"Because he prepared well" tidak bisa berdiri sendiri (anak). "he got the job" bisa (induk).</p>
+   <blockquote><b>Aturan koma:</b> kalau klausa terikat di <b>depan</b>, beri koma (<span class="ex">When I finished, I submitted it.</span>). Kalau di <b>belakang</b>, biasanya tanpa koma (<span class="ex">I submitted it when I finished.</span>).</blockquote>
+   <blockquote><b>Compound vs Complex:</b> compound = dua klausa <b>setara</b> (FANBOYS/;). Complex = satu klausa <b>bergantung</b> pada yang lain (because/although/when…).</blockquote>`},
+
+  {c:"var(--pos-adjective)", title:"Compound-Complex", sub:"Majemuk-Bertingkat", formula:"2+ Independent + 1+ Dependent",
+   body:`<p><b>Definisi:</b> gabungan keduanya — <b>minimal dua klausa bebas</b> DAN <b>minimal satu klausa terikat</b>.</p>
+   ${annotate([["Because he prepared well,","dep"],["he got the offer","indep"],[", and","conj"],["he started immediately","indep"],[".",null]])}
+   <p class="muted">1 klausa terikat ("Because…") + 2 klausa bebas ("he got the offer" + "he started immediately", disambung "and").</p>`}
+];
+
+/* token data for annotated examples mounted elsewhere */
+const ANN = {
+  anatomy:[
+    [["Fadhola","subj"],["confidently","mod"],["built","verb"],["a scalable system","obj"],[".",null]],
+    [["The interview","subj"],["was","verb"],["difficult","comp"],[".",null]]
+  ],
+  indep:[["Fadhola","subj"],["got","verb"],["the job","obj"],[".",null]],
+  dep:[["because","conj"],["he","subj"],["prepared","verb"],["well","mod"]],
+  whyDep:[
+    {cap:"Berdiri sendiri ✓ (independent)", t:[["He","subj"],["prepared","verb"],["well","mod"],[".",null]]},
+    {cap:"Ditambah \"because\" → menggantung (dependent)", t:[["Because","conj"],["he","subj"],["prepared","verb"],["well","mod"],["…",null]]}
+  ],
+  combine:[
+    {cap:"Compound = bebas + bebas", t:[["She prepared well","indep"],[", and","conj"],["she got the job","indep"],[".",null]]},
+    {cap:"Complex = bebas + terikat", t:[["She got the job","indep"],["because she prepared well","dep"],[".",null]]},
+    {cap:"Compound-Complex = 2 bebas + 1 terikat", t:[["Although the test was hard,","dep"],["she passed it","indep"],[", and","conj"],["she felt proud","indep"],[".",null]]}
+  ]
+};
+
+/* essay breakdown (from Fadhola's essay) */
+const ESSAY = [
+  {you:"…when i see people is unheard so their voice are not delivered well…",
+   up:"…when people feel <b>unheard</b> — when their <b>point doesn't get across</b> to the person they're talking to.",
+   why:[["their voice are not delivered","their point doesn't get across","\"get across\" = collocation natural untuk \"tersampaikan\""],["voice are (jamak salah)","point doesn't (tunggal)","subject-verb agreement"]]},
+  {you:"…all are they doing is just attacking each other like not listening and then misheard…",
+   up:"…all they're doing is <b>talking over each other</b> instead of <b>actually listening</b>, so they end up <b>misunderstanding</b> each other.",
+   why:[["attacking each other","talking over each other","lebih presisi: ngomong barengan, nggak gantian"],["misheard","misunderstanding","mishear = salah dengar; misunderstand = salah paham"]]},
+  {you:"…it piss me off because is always happens like they don't learn anything.",
+   up:"<b>Kasual:</b> It <b>pisses me off</b> because it keeps happening.<br><b>Netral:</b> It <b>frustrates me</b> because it happens over and over.<br><b>Formal:</b> I find it <b>frustrating</b> because it's a <b>recurring</b> problem.",
+   why:[["is always happens","keeps happening / over and over","jauh lebih natural + grammar benar"]]},
+  {you:"i'm not that fluent like native speakers… i lowkey kind of envy them somehow…",
+   up:"I'm not as fluent as native speakers, and I <b>kind of envy</b> people who grew up <b>surrounded by</b> English.",
+   why:[["envy (diulang)","a bit jealous of / I wish I had what they have","variasi biar nggak ngulang"],["not that fluent","not quite fluent yet / still working on my fluency","lebih halus"]]},
+  {you:"…which makes me a flexible team member in fast-moving environments.",
+   up:"…which makes me a <b>versatile</b> team member in <b>fast-paced</b> environments.",
+   why:[["flexible team member","versatile team member","versatile = serba bisa, lebih tepat untuk skill"],["fast-moving environments","fast-paced environments","collocation standar dunia kerja"]]}
+];
+
+/* vocabulary quiz */
+const Q_VOCAB = [
+  {q:`Pilih yang benar: "I need to ___ a decision."`, opts:["make","do","take","have"], a:0, why:`Collocation: <b>make</b> a decision (menciptakan/menghasilkan). "do a decision" salah.`},
+  {q:`"I am very ___ by this situation." (kamu yang merasa)`, opts:["frustrating","frustrate","frustrated","frustration"], a:2, why:`Perasaan SIAPA → pakai <b>-ed</b>: "I am frustrated." (-ing = penyebab: "the situation is frustrating").`},
+  {q:`Versi paling natural untuk "is always happens":`, opts:["is always happen","keeps happening","always is happening","happen always"], a:1, why:`<b>keeps happening</b> = natural & grammar benar (keep + V-ing untuk hal berulang).`},
+  {q:`Interview: cara pro bilang "aku dapat kerja":`, opts:["I got a job","I take a job","I land a job","I make a job"], a:2, why:`<b>land a job</b> lebih kuat/profesional daripada "get a job". (get→land = upgrade).`},
+  {q:`Ganti "very tired" dengan satu kata kuat:`, opts:["exhausted","sleepy","tiredness","resting"], a:0, why:`<b>exhausted</b> = sangat lelah. Daripada "very + kata", pakai satu kata kuat.`},
+  {q:`Phrasal verb untuk "memunculkan ide":`, opts:["come up with","come across","come down","come over"], a:0, why:`<b>come up with</b> = memunculkan ide. "She came up with a plan."`}
 ];
 
 const PHRASES = [
@@ -1106,15 +1447,55 @@ POS_LESSONS.forEach((l,i)=>{
   posWrap.appendChild(d);
 });
 
-/* =================== SENTENCE TYPES =================== */
-const stWrap=document.getElementById("sentTypes");
-SENT_TYPES.forEach(t=>{
-  const c=document.createElement("div"); c.className="card";
-  c.innerHTML=`<span class="chip" style="--c:${t.c}"><span class="sw"></span>${t.name}</span>
-    <div class="formula" style="margin:12px 0 8px">${t.formula}</div>
-    <p style="margin:.3em 0">${t.desc}</p><p style="margin:.4em 0 0">${t.ex}</p>`;
-  stWrap.appendChild(c);
+/* =================== ROLE LEGEND + ANATOMY =================== */
+const roleLeg=document.getElementById("roleLegend");
+if(roleLeg){
+  ["subj","verb","obj","comp","mod"].forEach(r=>{
+    const [lab,col]=ROLE[r];
+    const c=document.createElement("span"); c.className="chip"; c.style.setProperty("--c",col);
+    c.innerHTML=`<span class="sw"></span>${lab}`; roleLeg.appendChild(c);
+  });
+}
+const annAnatomy=document.getElementById("annAnatomy");
+if(annAnatomy) ANN.anatomy.forEach(t=>{ annAnatomy.insertAdjacentHTML("beforeend",annotate(t)); });
+
+/* =================== SENTENCE TYPE LESSONS =================== */
+const stWrap=document.getElementById("sentLessons");
+SENT_LESSONS.forEach((l,i)=>{
+  const d=document.createElement("details");
+  d.className="acc"; d.style.setProperty("--c",l.c);
+  if(i===0) d.open=true;
+  d.innerHTML=`<summary><span class="mk">${String(i+1).padStart(2,"0")}</span>
+    ${l.title} <span style="font-weight:400;color:var(--ink-soft);font-family:var(--f-body);font-size:15px">· ${l.sub}</span>
+    <span class="ar">›</span></summary><div class="body">
+    <div class="formula" style="margin:4px 0 6px">${l.formula}</div>${l.body}</div>`;
+  stWrap.appendChild(d);
 });
+
+/* =================== CLAUSE ANNOTATED EXAMPLES =================== */
+(function(){
+  const indep=document.getElementById("annIndep"); if(indep) indep.innerHTML=annotate(ANN.indep);
+  const dep=document.getElementById("annDep"); if(dep) dep.innerHTML=annotate(ANN.dep);
+  const why=document.getElementById("annWhyDep");
+  if(why) ANN.whyDep.forEach(x=>{ why.insertAdjacentHTML("beforeend",`<p class="ann-note">${x.cap}</p>`+annotate(x.t)); });
+  const comb=document.getElementById("annCombine");
+  if(comb) ANN.combine.forEach(x=>{ comb.insertAdjacentHTML("beforeend",`<p class="ann-note">${x.cap}</p>`+annotate(x.t)); });
+})();
+
+/* =================== ESSAY BREAKDOWN (vocab) =================== */
+(function(){
+  const wrap=document.getElementById("essayBreakdown"); if(!wrap) return;
+  ESSAY.forEach((e,i)=>{
+    let whyRows = e.why.map(w=>`<tr><td class="ex">${w[0]}</td><td class="ex"><b>${w[1]}</b></td><td>${w[2]}</td></tr>`).join("");
+    wrap.insertAdjacentHTML("beforeend",
+      `<div style="margin:16px 0 4px"><span class="quiz-meta">Kalimat ${i+1}</span></div>
+       <div class="ba">
+         <div class="col you"><span class="tagx">Kamu tulis</span><span class="txt">${e.you}</span></div>
+         <div class="col up"><span class="tagx">Upgrade</span><span class="txt">${e.up}</span></div>
+       </div>
+       <table style="margin-top:8px"><thead><tr><th>Kamu pakai</th><th>Ganti</th><th>Kenapa</th></tr></thead><tbody>${whyRows}</tbody></table>`);
+  });
+})();
 
 /* =================== PHRASE LESSONS =================== */
 const phWrap=document.getElementById("phraseLessons");
@@ -1271,12 +1652,13 @@ function posOptions(it){
 buildQuiz("quiz-pos", Q_POS, posOptions, "qpos", true);
 buildQuiz("quiz-struktur", Q_STRUCT, ()=>STRUCT_OPTS.map(o=>({label:o,value:o})), "qstr", true);
 buildQuiz("quiz-tense", Q_TENSE, it=>it.opts.map((o,i)=>({label:o,value:i})), "qtns", false);
+buildQuiz("quiz-vocab", Q_VOCAB, it=>it.opts.map((o,i)=>({label:o,value:i})), "qvoc", true);
 
 updateProgress();
 
 /* =================== SCROLLSPY (active nav) =================== */
 (function(){
-  const ids=["part-of-speech","struktur","frasa","klausa","grammar"];
+  const ids=["part-of-speech","struktur","frasa","klausa","grammar","vocab"];
   const topLinks={}, botLinks={};
   document.querySelectorAll(".top nav a").forEach(a=>{ const id=a.getAttribute("href").slice(1); topLinks[id]=a; });
   document.querySelectorAll(".bottomnav a").forEach(a=>{ botLinks[a.dataset.sec]=a; });
