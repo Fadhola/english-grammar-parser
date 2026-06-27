@@ -1,21 +1,23 @@
-# Parser — Belajar Tata Bahasa Inggris
+# LafleuParser — Belajar Tata Bahasa Inggris
 
-Website frontend interaktif untuk belajar tata bahasa Inggris dari nol. Bongkar setiap kata, lihat perannya, lalu uji pemahaman lewat latihan.
+Website frontend interaktif untuk belajar tata bahasa Inggris dari nol. Bongkar setiap kalimat, lihat peran tiap kata, lalu uji pemahaman lewat latihan.
+
+> **Parse** = membedah kalimat jadi bagian-bagiannya (subjek, verb, objek, klausa). LafleuParser = *si pembedah kalimat*.
 
 **Live:** https://english-grammar-parser-pi.vercel.app
+_(akan jadi `lafleuparser.vercel.app` setelah project di-rename di Vercel)_
 
 ## Fitur
 
-- **Parser interaktif** — klik kata mana pun di kalimat, lihat part of speech-nya (10 warna konsisten).
-- **Materi lengkap** — Part of Speech (10 jenis), Struktur Kalimat, Frasa, Klausa, dan Grammar (12 tenses, agreement, modal, voice, conditional, reported speech).
-- **Latihan** — 24 soal: tebak part of speech, klasifikasi kalimat, pilih tense, cocokkan conditional, flip card active↔passive. Progres tersimpan di browser (localStorage).
-- **Responsive** — mobile-first, bottom nav di layar kecil, top nav di desktop, scrollspy aktif.
+- **Parser interaktif** — klik kata mana pun, lihat part of speech-nya (10 warna konsisten) + anatomi kalimat (Subject/Verb/Object/Complement/Adverbial, bilingual).
+- **Materi lengkap** — Part of Speech, Struktur Kalimat, Frasa, Klausa, Grammar (12 tenses, agreement, modal, voice, conditional, reported speech, there is/are, gerund vs infinitive, articles, relative clauses, prepositions, punctuation).
+- **Vocabulary** — bedah essay, collocations, phrasal verbs, linking words, idioms, expressions, dan **word bank TOEFL/IELTS** (132 kata) dengan status hafalan (Belum/Lagi belajar/Tahu) + filter.
+- **Latihan** — 34 soal, progres tersimpan di browser (localStorage).
+- **UX** — reading progress bar, rail mini-map (desktop), sub-index, responsive mobile-first.
 
 ## Stack
 
-Satu file `index.html` — HTML + CSS + vanilla JS, tanpa build step. Buka langsung atau serve statis.
-
-Font: Space Grotesk (display), Newsreader (body), JetBrains Mono (formula).
+Satu file `index.html` — HTML + CSS + vanilla JS, tanpa build step. Font: Space Grotesk (display), Newsreader (body), JetBrains Mono (formula).
 
 ## Jalankan lokal
 
@@ -24,7 +26,7 @@ python -m http.server 8000
 # buka http://localhost:8000
 ```
 
-Atau cukup klik-dobel `index.html`.
+Atau klik-dobel `index.html`.
 
 ## Deploy
 
