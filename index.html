@@ -398,17 +398,20 @@
   /* reading progress bar (top) */
   .readbar{position:fixed;top:0;left:0;right:0;height:3px;background:transparent;z-index:100;pointer-events:none}
   .readbar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--pos-verb),var(--pos-adjective))}
-  /* left rail mini-map (desktop only) */
-  .railnav{position:fixed;left:18px;top:50%;transform:translateY(-50%);z-index:55;display:none;flex-direction:column;gap:15px}
+  /* left rail mini-map — docs-style ToC spine (desktop only) */
+  .railnav{position:fixed;left:20px;top:50%;transform:translateY(-50%);z-index:55;display:none;flex-direction:column;gap:3px}
   @media(min-width:1180px){.railnav{display:flex}}
-  .railnav a{display:flex;align-items:center;text-decoration:none;position:relative;padding:3px}
-  .railnav .d{width:11px;height:11px;border-radius:50%;background:var(--line);transition:.15s}
+  .railnav::before{content:"";position:absolute;left:7px;top:9px;bottom:9px;width:2px;background:var(--line-soft);border-radius:2px;z-index:0}
+  .railnav a{position:relative;display:block;width:18px;min-height:22px;text-decoration:none}
+  .railnav .d{position:absolute;left:3px;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;
+    background:var(--line);border:2px solid var(--paper);transition:.18s;z-index:2}
   .railnav a:hover .d{background:var(--ink-soft)}
   .railnav a.active .d{background:var(--brand);box-shadow:0 0 0 4px var(--brand-soft)}
-  .railnav .lbl{position:absolute;left:24px;white-space:nowrap;font-family:var(--f-display);font-size:12.5px;font-weight:500;
-    color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:4px 10px;
-    opacity:0;pointer-events:none;transform:translateX(-5px);transition:.15s;box-shadow:var(--shadow)}
-  .railnav a:hover .lbl,.railnav a.active .lbl{opacity:1;transform:translateX(0)}
+  .railnav .lbl{position:absolute;left:22px;top:50%;transform:translateY(-50%) translateX(-5px);white-space:nowrap;
+    font-family:var(--f-display);font-size:12px;font-weight:500;color:var(--ink);background:var(--panel);
+    border:1px solid var(--line);border-radius:8px;padding:4px 10px;opacity:0;pointer-events:none;transition:.15s;box-shadow:var(--shadow)}
+  .railnav a:hover .lbl{opacity:1;transform:translateY(-50%) translateX(0)}
+  .railnav a.active .lbl{display:none}
   /* sub-index chips */
   .vindex{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
   .vindex a{font-family:var(--f-display);font-size:12.5px;font-weight:500;text-decoration:none;
@@ -421,11 +424,24 @@
   .railnav{opacity:0;pointer-events:none;transition:opacity .35s ease}
   .railnav.show{opacity:1;pointer-events:auto}
 
-  /* ---------- Feature 2: rail sub-nav expansion ---------- */
-  .railnav .subs{position:absolute;left:17px;top:calc(100% + 2px);width:172px;max-height:0;opacity:0;overflow:hidden;transition:max-height .25s ease,opacity .15s ease;z-index:2}
-  .railnav a.active .subs{max-height:46vh;opacity:1;overflow-y:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);padding:4px 2px}
-  .railnav .sub{display:block;font-family:var(--f-display);font-size:11px;color:var(--ink-soft);text-decoration:none;padding:3px 8px;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  /* ---------- Feature 2: rail sub-nav panel (docs ToC) ---------- */
+  .railnav .subs{position:absolute;left:22px;top:50%;transform:translateY(-50%) translateX(-6px);
+    width:225px;max-height:0;opacity:0;overflow:hidden;z-index:3;
+    transition:opacity .18s ease,transform .2s ease,max-height .22s ease}
+  .railnav a.active .subs{max-height:64vh;opacity:1;overflow-y:auto;transform:translateY(-50%) translateX(0);
+    background:var(--panel);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);padding:10px 8px 11px}
+  .railnav .subs::-webkit-scrollbar{width:6px}
+  .railnav .subs::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+  .subhead{font-family:var(--f-display);font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--brand);padding:1px 6px 8px;border-bottom:1px solid var(--line-soft);margin-bottom:5px}
+  .sublist{position:relative;padding-left:11px}
+  .sublist::before{content:"";position:absolute;left:4px;top:5px;bottom:5px;width:2px;background:var(--line-soft);border-radius:2px}
+  .railnav .sub{position:relative;display:block;font-family:var(--f-display);font-size:12px;line-height:1.25;white-space:nowrap;
+    color:var(--ink-soft);text-decoration:none;padding:5px 8px;border-radius:7px;transition:color .12s,background .12s}
   .railnav .sub:hover{color:var(--brand);background:var(--brand-soft)}
+  .railnav .sub.active{color:var(--brand);font-weight:600;background:var(--brand-soft)}
+  .railnav .sub.active::before{content:"";position:absolute;left:-8px;top:50%;transform:translateY(-50%);
+    width:7px;height:7px;border-radius:50%;background:var(--brand);border:2px solid var(--panel)}
 
   /* ---------- Feature 3: scroll reveal ---------- */
   .reveal{opacity:0;transform:translateY(14px)}
@@ -2348,12 +2364,17 @@ updateProgress();
     "grammar":[["g-tenses","12 Tenses"],["g-agree","S–V Agreement"],["g-pron","Pronoun Agreement"],["g-modal","Modal Verbs"],["g-voice","Active/Passive"],["g-cond","Conditional"],["g-reported","Reported Speech"],["g-there","There is/are"],["g-gerinf","Gerund/Infinitive"],["g-articles","Articles"],["g-relative","Relative Clauses"],["g-prep","Prepositions"],["g-punct","Punctuation"]],
     "vocab":[["v-bank","Word Bank"],["v-essay","Bedah Essay"],["v-colloc","Collocations"],["v-upgrade","Upgrade Kata"],["v-family","Word Families"],["v-topik","Vocab per Topik"],["v-phrasal","Phrasal Verbs"],["v-linking","Linking Words"],["v-idiom","Idiom"],["v-trend","Tren & Data"],["v-opini","Opini & Linker"],["v-para","Paraphrasing"],["v-express","Expressions"],["v-quiz","Latihan"]]
   };
+  const subEls={};        // anchorId -> .sub element (for sub-scrollspy)
   document.querySelectorAll(".railnav a[data-sec]").forEach(a=>{
     const sec=a.dataset.sec;
     const subs=a.querySelector(".subs");
     if(!subs) return;
     const items=SUBNAV[sec]||[];
-    subs.innerHTML=items.map(([id,lbl])=>`<a class="sub" href="#${id}">${lbl}</a>`).join("");
+    if(!items.length){ subs.remove(); return; }   // klausa: no panel
+    const head=(a.querySelector(".lbl")?.textContent||"").replace(/^\d+\s*·\s*/,"");
+    subs.innerHTML=`<div class="subhead">${head}</div><div class="sublist">`+
+      items.map(([id,lbl])=>`<a class="sub" href="#${id}" data-id="${id}">${lbl}</a>`).join("")+`</div>`;
+    subs.querySelectorAll(".sub").forEach(s=>{ subEls[s.dataset.id]=s; });
   });
   // open <details> target before browser scroll
   document.querySelector(".railnav").addEventListener("click",function(e){
@@ -2363,6 +2384,19 @@ updateProgress();
     const el=document.getElementById(id);
     if(el&&el.tagName==="DETAILS") el.open=true;
   });
+  // sub-scrollspy: highlight the sub-section currently in view ("you are here")
+  const subIds=Object.keys(subEls);
+  if(subIds.length){
+    const subObs=new IntersectionObserver(entries=>{
+      entries.forEach(en=>{
+        if(en.isIntersecting){
+          Object.values(subEls).forEach(s=>s.classList.remove("active"));
+          const s=subEls[en.target.id]; if(s) s.classList.add("active");
+        }
+      });
+    },{rootMargin:"-30% 0px -55% 0px",threshold:0});
+    subIds.forEach(id=>{ const el=document.getElementById(id); if(el) subObs.observe(el); });
+  }
 })();
 
 /* =================== SCROLL REVEAL (fade + slide-up on enter) =================== */
