@@ -391,6 +391,20 @@
   .vcard.st-known .stbtn{border-color:var(--ok);color:#0c7a3a;background:#d6f5e2}
   .vcard.st-learning{background:#fff7e8;--cc:#c47d05!important}
   .vcard.st-learning .stbtn{border-color:#e0a92a;color:#a9700a;background:#fdeecb}
+  /* reading progress bar (top) */
+  .readbar{position:fixed;top:0;left:0;right:0;height:3px;background:transparent;z-index:100;pointer-events:none}
+  .readbar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--pos-verb),var(--pos-adjective))}
+  /* left rail mini-map (desktop only) */
+  .railnav{position:fixed;left:18px;top:50%;transform:translateY(-50%);z-index:55;display:none;flex-direction:column;gap:15px}
+  @media(min-width:1180px){.railnav{display:flex}}
+  .railnav a{display:flex;align-items:center;text-decoration:none;position:relative;padding:3px}
+  .railnav .d{width:11px;height:11px;border-radius:50%;background:var(--line);transition:.15s}
+  .railnav a:hover .d{background:var(--ink-soft)}
+  .railnav a.active .d{background:var(--brand);box-shadow:0 0 0 4px var(--brand-soft)}
+  .railnav .lbl{position:absolute;left:24px;white-space:nowrap;font-family:var(--f-display);font-size:12.5px;font-weight:500;
+    color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:4px 10px;
+    opacity:0;pointer-events:none;transform:translateX(-5px);transition:.15s;box-shadow:var(--shadow)}
+  .railnav a:hover .lbl,.railnav a.active .lbl{opacity:1;transform:translateX(0)}
   /* sub-index chips */
   .vindex{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
   .vindex a{font-family:var(--f-display);font-size:12.5px;font-weight:500;text-decoration:none;
@@ -402,6 +416,17 @@
 </head>
 <body>
 <a href="#part-of-speech" class="skip">Lewati ke materi</a>
+
+<div class="readbar" aria-hidden="true"><i id="readbarFill"></i></div>
+
+<nav class="railnav" id="railnav" aria-label="Peta bagian">
+  <a href="#part-of-speech" data-sec="part-of-speech"><span class="d"></span><span class="lbl">01 · Part of Speech</span></a>
+  <a href="#struktur" data-sec="struktur"><span class="d"></span><span class="lbl">02 · Struktur</span></a>
+  <a href="#frasa" data-sec="frasa"><span class="d"></span><span class="lbl">03 · Frasa</span></a>
+  <a href="#klausa" data-sec="klausa"><span class="d"></span><span class="lbl">04 · Klausa</span></a>
+  <a href="#grammar" data-sec="grammar"><span class="d"></span><span class="lbl">05 · Grammar</span></a>
+  <a href="#vocab" data-sec="vocab"><span class="d"></span><span class="lbl">06 · Vocabulary</span></a>
+</nav>
 
 <header class="top">
   <div class="top-inner">
@@ -472,10 +497,24 @@
 
     <div class="card">
       <h3>Anatomi Kalimat — Bedah Dulu</h3>
-      <p style="margin-top:2px">Tiap kalimat punya "kerangka". Minimal: <b>subjek</b> (pelaku) + <b>verb</b> (aksi/keadaan). Sering ditambah <b>objek</b> (penerima aksi) dan <b>keterangan</b> (kapan/bagaimana/di mana). Lihat warna labelnya:</p>
+      <p style="margin-top:2px">Tiap kalimat punya "kerangka". Label di bawah pakai <b>istilah Inggris</b> (yang dipakai di buku & tes) plus arti Indonesia-nya. Minimal sebuah kalimat butuh <b>Subject + Verb</b>; sering ditambah Object, Complement, atau Adverbial.</p>
+      <h4>Arti tiap istilah</h4>
+      <div class="vgrid c2" id="roleGloss"></div>
+      <h4 style="margin-top:16px">Contoh dibongkar</h4>
       <div class="role-legend" id="roleLegend"></div>
       <div id="annAnatomy"></div>
-      <blockquote><b>Cara cepat cari verb:</b> tanya <em>"apa yang dilakukan / apa keadaannya?"</em> → itu verb-nya. <b>Cari subjek:</b> tanya <em>"siapa/apa yang melakukannya?"</em> → itu subjeknya. Latih ini di tiap contoh di bawah.</blockquote>
+      <blockquote><b>Object vs Complement:</b> Object = penerima aksi (<span class="ex">She built <b>a system</b></span> — sistem yang dibangun). Complement = mendeskripsikan subjek setelah linking verb (<span class="ex">The interview was <b>difficult</b></span> — "difficult" = sifat si interview, bukan penerima aksi).</blockquote>
+      <blockquote><b>Cara cepat cari Verb:</b> tanya <em>"apa yang dilakukan / apa keadaannya?"</em> → itu verb. <b>Cari Subject:</b> tanya <em>"siapa/apa yang melakukannya?"</em> → itu subject. Latih di tiap contoh di bawah.</blockquote>
+    </div>
+
+    <div class="card" style="border-left:3px solid var(--brand)">
+      <h3>Dulu — Apa Itu "Klausa"? (biar nggak bingung)</h3>
+      <p style="margin-top:2px">4 jenis kalimat di bawah dibedakan dari <b>klausa</b>-nya. <b>Klausa = kelompok kata yang punya Subject + Verb.</b> Ada 2 macam:</p>
+      <div class="vgrid c2" style="margin:8px 0">
+        <div class="vcard" style="--cc:#475569"><b>Independent</b> <span class="pos" style="color:#475569">Klausa Bebas</span><span class="m">Bisa berdiri sendiri jadi kalimat utuh. Contoh: <i>"She got the job."</i></span></div>
+        <div class="vcard" style="--cc:var(--pos-pronoun)"><b>Dependent</b> <span class="pos" style="color:var(--pos-pronoun)">Klausa Terikat</span><span class="m">Menggantung, butuh induk. Contoh: <i>"because she prepared"</i> (lalu apa?)</span></div>
+      </div>
+      <p class="muted" style="margin:0">Bingung bedanya? Tenang — dibahas tuntas dengan banyak contoh di <a href="#klausa" style="color:var(--brand);font-weight:600">Bagian 04 · Klausa →</a>. Di sini cukup ingat: <b>bebas = utuh, terikat = menggantung.</b></p>
     </div>
 
     <div id="sentLessons"></div>
@@ -509,7 +548,7 @@
   <section id="klausa">
     <p class="eyebrow">Bagian 04</p>
     <h2 class="sec">Klausa (Clause)</h2>
-    <p class="sec-lead">Sekelompok kata yang memiliki subjek <b>dan</b> verb. Bisa berdiri sendiri (independent) atau menggantung karena kata penghubung (dependent). Inilah "bahan baku" yang dipakai untuk membentuk 4 jenis kalimat di Bagian 02.</p>
+    <p class="sec-lead">Sekelompok kata yang memiliki subjek <b>dan</b> verb. Bisa berdiri sendiri (independent) atau menggantung karena kata penghubung (dependent). Inilah "bahan baku" yang dipakai untuk membentuk 4 jenis kalimat di <a href="#struktur" style="color:var(--brand);font-weight:600">Bagian 02 · Struktur ←</a>. <b>Klausa dulu → baru kalimat.</b> Dua bagian ini saling nyambung: kalimat = rangkaian klausa.</p>
 
     <div class="grid cols-2">
       <div class="card">
@@ -610,27 +649,82 @@
     <details class="acc" style="--c:var(--pos-verb)">
       <summary><span class="mk">5.4</span>Modal Verbs<span class="ar">›</span></summary>
       <div class="body">
-        <p>Verb bantu untuk kemungkinan, kemampuan, izin, kewajiban, saran. Rumus: <span class="formula">S + modal + V1</span> — selalu V1, tanpa "to".</p>
+        <p><b>Definisi:</b> verb bantu yang menambah <em>makna</em> ke verb utama — kemampuan, izin, kewajiban, saran, kemungkinan. Rumus: <span class="formula">S + modal + V1</span> (selalu V1, tanpa "to", tanpa -s).</p>
+        <h4>Dikelompokkan per Fungsi</h4>
         <table>
-          <thead><tr><th>Modal</th><th>Makna</th><th>Contoh</th></tr></thead>
+          <thead><tr><th>Fungsi</th><th>Modal</th><th>Contoh</th></tr></thead>
           <tbody>
-            <tr><td>can</td><td>kemampuan/izin</td><td class="ex">She <b>can</b> code in Python.</td></tr>
-            <tr><td>could</td><td>lampau/sopan</td><td class="ex">Could you help me?</td></tr>
-            <tr><td>may / might</td><td>izin / kemungkinan kecil</td><td class="ex">It <b>might</b> rain.</td></tr>
-            <tr><td>must</td><td>kewajiban kuat</td><td class="ex">You <b>must</b> submit it.</td></tr>
-            <tr><td>should</td><td>saran</td><td class="ex">You <b>should</b> rest.</td></tr>
-            <tr><td>will / would</td><td>masa depan / pengandaian</td><td class="ex">I <b>would</b> love to.</td></tr>
+            <tr><td><b>Kemampuan</b></td><td>can / could (lampau)</td><td class="ex">She <b>can</b> code. · I <b>could</b> swim at 5.</td></tr>
+            <tr><td><b>Izin</b></td><td>can / may (formal) / could</td><td class="ex"><b>May</b> I leave early?</td></tr>
+            <tr><td><b>Kewajiban</b></td><td>must / have to</td><td class="ex">You <b>must</b> submit it today.</td></tr>
+            <tr><td><b>Larangan</b></td><td>must not (mustn't)</td><td class="ex">You <b>mustn't</b> share the password.</td></tr>
+            <tr><td><b>Saran</b></td><td>should / ought to / had better</td><td class="ex">You <b>should</b> rest. · You'<b>d better</b> hurry.</td></tr>
+            <tr><td><b>Permintaan sopan</b></td><td>could / would / can</td><td class="ex"><b>Could</b> you help me?</td></tr>
+            <tr><td><b>Penawaran/niat</b></td><td>will / shall</td><td class="ex">I <b>will</b> call you. · <b>Shall</b> we begin?</td></tr>
           </tbody>
         </table>
-        <blockquote class="warn">❌ "She <b>can to</b> code" / "She <b>cans</b> code" → ✓ "She <b>can code</b>". Modal tidak pakai -s dan tidak diikuti "to".</blockquote>
+        <h4>Tingkat Kepastian (Kemungkinan)</h4>
+        <p>Modal juga menyatakan <b>seberapa yakin</b> kamu — dari pasti sampai meragukan:</p>
+        <table>
+          <thead><tr><th>Modal</th><th>Yakin?</th><th>Contoh</th></tr></thead>
+          <tbody>
+            <tr><td><b>must</b></td><td>~95% (pasti, simpulan logis)</td><td class="ex">He's not answering — he <b>must</b> be asleep.</td></tr>
+            <tr><td><b>should</b></td><td>~70% (kemungkinan besar)</td><td class="ex">The bus <b>should</b> arrive soon.</td></tr>
+            <tr><td><b>may / can</b></td><td>~50% (mungkin)</td><td class="ex">It <b>may</b> rain later.</td></tr>
+            <tr><td><b>might / could</b></td><td>~30% (kecil)</td><td class="ex">She <b>might</b> come, but I doubt it.</td></tr>
+            <tr><td><b>can't</b></td><td>~95% TIDAK (mustahil)</td><td class="ex">That <b>can't</b> be true.</td></tr>
+          </tbody>
+        </table>
+        <h4>Negatif &amp; Tanya</h4>
+        <table>
+          <thead><tr><th>Bentuk</th><th>Pola</th><th>Contoh</th></tr></thead>
+          <tbody>
+            <tr><td>Negatif</td><td>modal + <b>not</b> + V1</td><td class="ex">You <b>should not (shouldn't)</b> worry.</td></tr>
+            <tr><td>Tanya</td><td><b>modal</b> + S + V1?</td><td class="ex"><b>Can</b> you swim?</td></tr>
+            <tr><td>Jawab singkat</td><td>Yes/No, S + modal</td><td class="ex">"Can you?" → "Yes, I <b>can</b>."</td></tr>
+          </tbody>
+        </table>
+        <blockquote><b>must vs have to:</b> <em>must</em> = kewajiban dari diri sendiri/aturan ("I must finish this"). <em>have to</em> = kewajiban dari luar ("I have to wear a uniform"). <b>mustn't vs don't have to:</b> mustn't = dilarang; don't have to = tidak wajib (boleh, terserah).</blockquote>
+        <blockquote class="warn">❌ "She <b>can to</b> code" / "She <b>cans</b> code" / "She <b>must</b> to go" → ✓ "She <b>can code</b>" / "She <b>must go</b>". Modal selalu diikuti V1 polos.</blockquote>
       </div>
     </details>
 
     <!-- Active / Passive -->
     <div class="card" id="g-voice" style="margin-top:12px">
       <h3>5.5 — Active & Passive Voice</h3>
-      <p class="muted" style="margin-top:0">Active: subjek <b>melakukan</b> aksi. Passive: subjek <b>dikenai</b> aksi. Rumus passive: <span class="formula">S + be + V3 (+ by pelaku)</span>. Klik kartu untuk membaliknya.</p>
+      <p class="muted" style="margin-top:0">Active: subjek <b>melakukan</b> aksi (fokus ke pelaku). Passive: subjek <b>dikenai</b> aksi (fokus ke penerima/hasil). Rumus passive: <span class="formula">S + be + V3 (+ by pelaku)</span>. Klik kartu untuk membaliknya.</p>
       <div class="flips" id="voiceFlips"></div>
+
+      <h4 style="margin-top:18px">Cara Mengubah Active → Passive (3 langkah)</h4>
+      <ol style="padding-left:22px">
+        <li style="margin:5px 0">Objek active jadi <b>subjek</b> passive. <span class="ex">She wrote <u>the report</u> → <u>The report</u> …</span></li>
+        <li style="margin:5px 0">Pakai <b>be</b> (sesuai tense) + <b>V3</b>. <span class="ex">… <b>was written</b> …</span></li>
+        <li style="margin:5px 0">Subjek lama jadi <b>by + pelaku</b> (boleh dihapus kalau tak penting). <span class="ex">… by her.</span></li>
+      </ol>
+
+      <h4>Passive di Tiap Tense</h4>
+      <table>
+        <thead><tr><th>Tense</th><th>Active</th><th>Passive (be + V3)</th></tr></thead>
+        <tbody>
+          <tr><td>Simple Present</td><td class="ex">builds</td><td class="ex">is / are built</td></tr>
+          <tr><td>Present Cont.</td><td class="ex">is building</td><td class="ex">is being built</td></tr>
+          <tr><td>Simple Past</td><td class="ex">built</td><td class="ex">was / were built</td></tr>
+          <tr><td>Past Cont.</td><td class="ex">was building</td><td class="ex">was being built</td></tr>
+          <tr><td>Present Perfect</td><td class="ex">has built</td><td class="ex">has been built</td></tr>
+          <tr><td>Future (will)</td><td class="ex">will build</td><td class="ex">will be built</td></tr>
+          <tr><td>Modal</td><td class="ex">must build</td><td class="ex">must be built</td></tr>
+        </tbody>
+      </table>
+
+      <h4>Negatif, Tanya &amp; 2 Objek</h4>
+      <ul>
+        <li><b>Negatif:</b> <span class="ex">The report <b>wasn't</b> written.</span></li>
+        <li><b>Tanya:</b> <span class="ex"><b>Was</b> the report written?</span></li>
+        <li><b>2 objek</b> (give/send/offer): salah satu jadi subjek — <span class="ex">They gave <u>me</u> <u>a prize</u> → <b>I was given</b> a prize</span> / <b>A prize was given</b> to me.</li>
+        <li><b>Get-passive</b> (kasual): <span class="ex">My phone <b>got stolen</b>.</span> (= was stolen)</li>
+      </ul>
+
+      <blockquote><b>Kapan pakai passive?</b> ① pelaku tidak penting/tidak diketahui (<span class="ex">The window <b>was broken</b>.</span>) · ② fokus ke hasil (<span class="ex">The bridge <b>was completed</b> in 2024.</span>) · ③ konteks formal/ilmiah (<span class="ex">The data <b>was analyzed</b> using Python.</span>). Jangan over-pakai passive — active biasanya lebih jelas & kuat.</blockquote>
     </div>
 
     <!-- Conditional matcher -->
@@ -679,6 +773,107 @@
           </table>
         </div>
         <blockquote>Pertanyaan → "asked" + urutan biasa: <span class="ex">She asked where I worked.</span> Yes/No → if/whether: <span class="ex">She asked if I was ready.</span> Perintah → told/asked + to + V1: <span class="ex">She told me to submit the report.</span></blockquote>
+      </div>
+    </details>
+
+    <details class="acc" id="g-there" style="--c:var(--pos-noun)">
+      <summary><span class="mk">5.8</span>There is / There are — Kalimat Eksistensial<span class="ar">›</span></summary>
+      <div class="body">
+        <p>Dipakai untuk menyatakan bahwa <b>sesuatu ADA / eksis</b>. "There" di sini bukan "di sana" — ia <em>dummy subject</em> (subjek boneka); yang menentukan is/are adalah <b>kata benda sesudahnya</b>.</p>
+        <table>
+          <thead><tr><th>Pakai</th><th>Untuk</th><th>Contoh</th></tr></thead>
+          <tbody>
+            <tr><td><b>There is</b></td><td>benda <b>tunggal</b> / uncountable</td><td class="ex">There <b>is</b> a book on the table. · There <b>is</b> some water.</td></tr>
+            <tr><td><b>There are</b></td><td>benda <b>jamak</b></td><td class="ex">There <b>are</b> three books.</td></tr>
+          </tbody>
+        </table>
+        <p><b>Tense lain:</b> There <b>was</b>/<b>were</b> (lampau) · There <b>will be</b> (depan) · There <b>has been</b>/<b>have been</b> (perfect).</p>
+        <p><b>Negatif &amp; tanya:</b> <span class="ex">There <b>isn't</b> any milk.</span> · <span class="ex"><b>Is there</b> a problem?</span> · <span class="ex"><b>Are there</b> any questions?</span></p>
+        <blockquote class="warn"><b>Jebakan (ikut benda terdekat):</b> ❌ "There <b>is</b> two options" → ✓ "There <b>are</b> two options". Tapi untuk daftar campuran, ikut yang pertama: <span class="ex">There <b>is</b> a laptop and two books.</span> Ini nyambung ke <a href="#grammar" style="color:var(--brand)">Subject–Verb Agreement (5.2)</a>.</blockquote>
+      </div>
+    </details>
+
+    <details class="acc" id="g-gerinf" style="--c:var(--pos-verb)">
+      <summary><span class="mk">5.9</span>Gerund vs Infinitive (-ing vs to + V1)<span class="ar">›</span></summary>
+      <div class="body">
+        <p>Kalau ada verb diikuti verb lain, verb kedua jadi <b>gerund (V-ing)</b> atau <b>infinitive (to + V1)</b> — tergantung verb pertamanya. Salah satu kesalahan tersering.</p>
+        <table>
+          <thead><tr><th>Verb pertama</th><th>Diikuti</th><th>Contoh</th></tr></thead>
+          <tbody>
+            <tr><td>enjoy, avoid, finish, mind, suggest, keep, practice</td><td><b>gerund</b> (V-ing)</td><td class="ex">I <b>enjoy coding</b>. · Avoid <b>making</b> mistakes.</td></tr>
+            <tr><td>want, need, decide, hope, plan, promise, agree, learn</td><td><b>infinitive</b> (to + V1)</td><td class="ex">I <b>want to learn</b>. · She decided <b>to leave</b>.</td></tr>
+            <tr><td>setelah <b>preposisi</b> (in, of, at, about…)</td><td><b>gerund</b></td><td class="ex">good <b>at solving</b> · interested <b>in learning</b></td></tr>
+            <tr><td>like, love, hate, start, begin</td><td>dua-duanya OK</td><td class="ex">I like <b>swimming</b> / <b>to swim</b>.</td></tr>
+          </tbody>
+        </table>
+        <blockquote><b>Beda makna:</b> "stop <b>smoking</b>" (berhenti merokok) vs "stop <b>to smoke</b>" (berhenti untuk merokok). "remember <b>locking</b>" (ingat sudah mengunci) vs "remember <b>to lock</b>" (ingat untuk mengunci).</blockquote>
+      </div>
+    </details>
+
+    <details class="acc" id="g-articles" style="--c:var(--pos-determiner)">
+      <summary><span class="mk">5.10</span>Articles Mendalam — a / an / the / —<span class="ar">›</span></summary>
+      <div class="body">
+        <p>Salah satu yang paling sering salah buat non-native. Pertanyaan kunci: <em>"spesifik atau umum? bisa dihitung atau tidak?"</em></p>
+        <table>
+          <thead><tr><th>Pakai</th><th>Kapan</th><th>Contoh</th></tr></thead>
+          <tbody>
+            <tr><td><b>a / an</b></td><td>tunggal, countable, <b>belum spesifik</b> (baru disebut)</td><td class="ex">I saw <b>a</b> dog.</td></tr>
+            <tr><td><b>the</b></td><td><b>spesifik</b> (sudah jelas/sudah disebut/satu-satunya)</td><td class="ex"><b>The</b> dog was barking. · <b>the</b> sun</td></tr>
+            <tr><td><b>— (tanpa article)</b></td><td>jamak/uncountable yang <b>umum</b>, nama orang/negara</td><td class="ex">I like <b>music</b>. · <b>Dogs</b> are loyal.</td></tr>
+          </tbody>
+        </table>
+        <blockquote><b>a vs an = bunyi, bukan huruf:</b> <span class="ex">an hour</span> (h bisu), <span class="ex">a university</span> (bunyi "yu"), <span class="ex">an MRT</span> (bunyi "em").</blockquote>
+        <blockquote class="warn">Alur: pertama kali sebut → <b>a/an</b>; sesudahnya → <b>the</b>. <span class="ex">I bought <b>a</b> laptop. <b>The</b> laptop is fast.</span></blockquote>
+      </div>
+    </details>
+
+    <details class="acc" id="g-relative" style="--c:var(--pos-pronoun)">
+      <summary><span class="mk">5.11</span>Relative Clauses (who / which / that)<span class="ar">›</span></summary>
+      <div class="body">
+        <p>Klausa yang <b>menerangkan noun</b> (= adjective clause, nyambung ke <a href="#klausa" style="color:var(--brand)">Bagian 04</a>). Diawali relative pronoun:</p>
+        <table>
+          <thead><tr><th>Pronoun</th><th>Untuk</th><th>Contoh</th></tr></thead>
+          <tbody>
+            <tr><td>who / whom</td><td>orang</td><td class="ex">The man <b>who called</b> is here.</td></tr>
+            <tr><td>which</td><td>benda/hewan</td><td class="ex">The app <b>which crashed</b> is fixed.</td></tr>
+            <tr><td>that</td><td>orang/benda (defining)</td><td class="ex">The system <b>that he built</b> scaled.</td></tr>
+            <tr><td>whose</td><td>kepemilikan</td><td class="ex">a dev <b>whose code</b> is clean</td></tr>
+            <tr><td>where / when</td><td>tempat / waktu</td><td class="ex">the office <b>where I work</b></td></tr>
+          </tbody>
+        </table>
+        <blockquote><b>Defining vs Non-defining:</b> <em>Defining</em> (info wajib, tanpa koma): <span class="ex">The student who studied passed.</span> <em>Non-defining</em> (info tambahan, pakai koma, tak boleh "that"): <span class="ex">Fadhola, <b>who is from Jakarta,</b> codes in Python.</span></blockquote>
+      </div>
+    </details>
+
+    <details class="acc" id="g-prep" style="--c:var(--pos-preposition)">
+      <summary><span class="mk">5.12</span>Prepositions — in / on / at (Waktu &amp; Tempat)<span class="ar">›</span></summary>
+      <div class="body">
+        <p>Dari besar ke kecil: <b>in → on → at</b>. Logikanya sama untuk waktu & tempat.</p>
+        <table>
+          <thead><tr><th></th><th>WAKTU</th><th>TEMPAT</th></tr></thead>
+          <tbody>
+            <tr><td><b>in</b> (besar/tertutup)</td><td class="ex">in 2026, in May, in the morning</td><td class="ex">in Jakarta, in a room</td></tr>
+            <tr><td><b>on</b> (permukaan/hari)</td><td class="ex">on Monday, on July 3</td><td class="ex">on the wall, on the bus</td></tr>
+            <tr><td><b>at</b> (titik spesifik)</td><td class="ex">at 9 a.m., at night</td><td class="ex">at the door, at home</td></tr>
+          </tbody>
+        </table>
+        <blockquote>Arah/gerakan: <b>to</b> (ke), <b>from</b> (dari), <b>into</b> (masuk ke), <b>onto</b> (naik ke), <b>through</b> (menembus), <b>across</b> (menyeberang). <span class="ex">She walked <b>into</b> the room.</span></blockquote>
+      </div>
+    </details>
+
+    <details class="acc" id="g-punct" style="--c:var(--pos-adverb)">
+      <summary><span class="mk">5.13</span>Punctuation — Koma, Titik Koma, Apostrof<span class="ar">›</span></summary>
+      <div class="body">
+        <table>
+          <thead><tr><th>Tanda</th><th>Aturan</th><th>Contoh</th></tr></thead>
+          <tbody>
+            <tr><td><b>, (koma)</b></td><td>sebelum FANBOYS di compound; sesudah dependent clause di depan; pisah daftar</td><td class="ex">When I finished, I left.</td></tr>
+            <tr><td><b>; (titik koma)</b></td><td>sambung 2 kalimat utuh tanpa penghubung</td><td class="ex">She prepared well; she got the job.</td></tr>
+            <tr><td><b>: (titik dua)</b></td><td>memperkenalkan daftar/penjelasan</td><td class="ex">I need three things: focus, time, coffee.</td></tr>
+            <tr><td><b>' (apostrof)</b></td><td>kepemilikan & singkatan</td><td class="ex">Fadhola's laptop · it's (= it is)</td></tr>
+          </tbody>
+        </table>
+        <blockquote class="warn"><b>its vs it's:</b> <em>its</em> = kepunyaan (no apostrof). <em>it's</em> = it is / it has. · <b>Comma splice</b> ❌: "I came, I saw" → pakai titik koma / FANBOYS / titik.</blockquote>
       </div>
     </details>
   </section>
@@ -945,6 +1140,29 @@
           <tr><td>a lot of people</td><td>a significant proportion / the majority</td></tr>
         </tbody></table>
         <blockquote>💡 Latihan: ambil 1 kalimat soal, tulis ulang ganti minimal 3 kata pakai padanan di atas. Itu inti skor tinggi Writing.</blockquote>
+      </div>
+    </details>
+
+    <details class="acc" id="v-express" style="--c:var(--pos-interjection)">
+      <summary><span class="mk">11</span>Expressions — Frasa Siap Pakai (Speaking &amp; Writing)<span class="ar">›</span></summary>
+      <div class="body">
+        <p>Frasa "template" yang langsung bisa kamu tempel saat ngomong/nulis — bikin lancar tanpa nyusun dari nol. Hafal sebagai <b>chunk</b>.</p>
+        <h4>Memberi opini</h4>
+        <p><span class="vchip">In my opinion…</span><span class="vchip">From my perspective…</span><span class="vchip">The way I see it…</span><span class="vchip">If you ask me…</span><span class="vchip">I'd say that…</span><span class="vchip">It seems to me that…</span></p>
+        <h4>Setuju / Tidak setuju</h4>
+        <p><span class="vchip">I totally agree</span><span class="vchip">That's a fair point</span><span class="vchip">I see what you mean, but…</span><span class="vchip">I'm not so sure about that</span><span class="vchip">I beg to differ (formal)</span></p>
+        <h4>Klarifikasi &amp; mengulur (speaking)</h4>
+        <p><span class="vchip">What I mean is…</span><span class="vchip">Let me put it this way…</span><span class="vchip">That's a good question…</span><span class="vchip">Let me think for a second…</span><span class="vchip">how should I put it…</span></p>
+        <h4>Frame untuk Essay / Writing</h4>
+        <table><thead><tr><th>Fungsi</th><th>Frame</th></tr></thead><tbody>
+          <tr><td>Buka</td><td class="ex">It is often argued that… · In recent years, … has become…</td></tr>
+          <tr><td>Tunjuk sisi</td><td class="ex">On the one hand, … On the other hand, …</td></tr>
+          <tr><td>Contoh</td><td class="ex">A clear example of this is…</td></tr>
+          <tr><td>Tutup</td><td class="ex">In conclusion, … · Taking everything into account, …</td></tr>
+        </tbody></table>
+        <h4>Sopan / profesional (interview, email)</h4>
+        <p><span class="vchip">I'd be happy to…</span><span class="vchip">Would it be possible to…</span><span class="vchip">I was wondering if…</span><span class="vchip">Thank you for your time</span><span class="vchip">Please let me know if…</span></p>
+        <blockquote>💡 Pilih 3–5 frame favoritmu per kategori, pakai berulang sampai otomatis. Lebih baik kuasai sedikit yang lancar daripada banyak yang ragu.</blockquote>
       </div>
     </details>
 
@@ -1259,15 +1477,16 @@ const POS_LESSONS = [
 ];
 
 /* ---- annotated-sentence engine (subject / verb / object / clause) ---- */
+/* role: [English label, color, Indonesian, short definition] */
 const ROLE = {
-  subj:["SUBJEK","var(--pos-noun)"],
-  verb:["VERB","var(--pos-verb)"],
-  obj:["OBJEK","var(--pos-preposition)"],
-  comp:["PELENGKAP","var(--pos-adjective)"],
-  mod:["KETERANGAN","var(--pos-adverb)"],
-  conj:["PENGHUBUNG","var(--pos-conjunction)"],
-  indep:["KLAUSA BEBAS","#475569"],
-  dep:["KLAUSA TERIKAT","var(--pos-pronoun)"]
+  subj:["Subject","var(--pos-noun)","Subjek","pelaku — siapa/apa yang melakukan"],
+  verb:["Verb","var(--pos-verb)","Verb / Kata Kerja","aksi atau keadaan"],
+  obj:["Object","var(--pos-preposition)","Objek","penerima aksi — kena verb-nya"],
+  comp:["Complement","var(--pos-adjective)","Pelengkap","melengkapi subjek setelah linking verb (is/seem)"],
+  mod:["Adverbial","var(--pos-adverb)","Keterangan","kapan / di mana / bagaimana"],
+  conj:["Conjunction","var(--pos-conjunction)","Penghubung","penyambung klausa/kata"],
+  indep:["Independent","#475569","Klausa Bebas","bisa berdiri sendiri jadi kalimat"],
+  dep:["Dependent","var(--pos-pronoun)","Klausa Terikat","menggantung, butuh induk"]
 };
 function annotate(tokens){
   return `<div class="ann">`+tokens.map(t=>{
@@ -1712,13 +1931,22 @@ POS_LESSONS.forEach((l,i)=>{
 const roleLeg=document.getElementById("roleLegend");
 if(roleLeg){
   ["subj","verb","obj","comp","mod"].forEach(r=>{
-    const [lab,col]=ROLE[r];
+    const [en,col,id,def]=ROLE[r];
     const c=document.createElement("span"); c.className="chip"; c.style.setProperty("--c",col);
-    c.innerHTML=`<span class="sw"></span>${lab}`; roleLeg.appendChild(c);
+    c.innerHTML=`<span class="sw"></span><b>${en}</b>&nbsp;· ${id}`;
+    c.title=def; roleLeg.appendChild(c);
   });
 }
 const annAnatomy=document.getElementById("annAnatomy");
 if(annAnatomy) ANN.anatomy.forEach(t=>{ annAnatomy.insertAdjacentHTML("beforeend",annotate(t)); });
+/* glossary of roles under anatomy */
+const roleGloss=document.getElementById("roleGloss");
+if(roleGloss){
+  roleGloss.innerHTML=["subj","verb","obj","comp","mod"].map(r=>{
+    const [en,col,id,def]=ROLE[r];
+    return `<div class="vcard" style="--cc:${col}"><b>${en}</b> <span class="pos" style="color:${col}">${id}</span><span class="m">${def}</span></div>`;
+  }).join("");
+}
 
 /* =================== SENTENCE TYPE LESSONS =================== */
 const stWrap=document.getElementById("sentLessons");
@@ -1861,6 +2089,7 @@ SENT_LESSONS.forEach((l,i)=>{
     ["v-trend","Tren & Data (Task 1)",0],
     ["v-opini","Opini & Linker",0],
     ["v-para","Paraphrasing",0],
+    ["v-express","Expressions / Frasa Siap Pakai",0],
     ["v-quiz","Latihan",0]
   ];
   wrap.innerHTML=items.map(([id,lab,star])=>`<a href="#${id}"${star?' class="star"':''}>${lab}</a>`).join("");
@@ -2031,22 +2260,40 @@ buildQuiz("quiz-vocab", Q_VOCAB, it=>it.opts.map((o,i)=>({label:o,value:i})), "q
 
 updateProgress();
 
-/* =================== SCROLLSPY (active nav) =================== */
+/* =================== SCROLLSPY (active nav) + RAIL =================== */
 (function(){
   const ids=["part-of-speech","struktur","frasa","klausa","grammar","vocab"];
-  const topLinks={}, botLinks={};
+  const topLinks={}, botLinks={}, railLinks={};
   document.querySelectorAll(".top nav a").forEach(a=>{ const id=a.getAttribute("href").slice(1); topLinks[id]=a; });
   document.querySelectorAll(".bottomnav a").forEach(a=>{ botLinks[a.dataset.sec]=a; });
+  document.querySelectorAll(".railnav a").forEach(a=>{ railLinks[a.dataset.sec]=a; });
   function setActive(id){
     ids.forEach(s=>{
-      topLinks[s]&&topLinks[s].classList.toggle("active",s===id);
-      botLinks[s]&&botLinks[s].classList.toggle("active",s===id);
+      const on=s===id;
+      topLinks[s]&&topLinks[s].classList.toggle("active",on);
+      botLinks[s]&&botLinks[s].classList.toggle("active",on);
+      railLinks[s]&&railLinks[s].classList.toggle("active",on);
     });
   }
   const obs=new IntersectionObserver(entries=>{
     entries.forEach(e=>{ if(e.isIntersecting) setActive(e.target.id); });
   },{rootMargin:"-45% 0px -50% 0px",threshold:0});
   ids.forEach(id=>{ const el=document.getElementById(id); if(el) obs.observe(el); });
+})();
+
+/* =================== READING PROGRESS BAR =================== */
+(function(){
+  const fill=document.getElementById("readbarFill"); if(!fill) return;
+  let ticking=false;
+  function update(){
+    const h=document.documentElement;
+    const max=h.scrollHeight-h.clientHeight;
+    const pct=max>0 ? (h.scrollTop || document.body.scrollTop)/max*100 : 0;
+    fill.style.width=Math.min(100,Math.max(0,pct))+"%";
+    ticking=false;
+  }
+  window.addEventListener("scroll",()=>{ if(!ticking){ requestAnimationFrame(update); ticking=true; } },{passive:true});
+  window.addEventListener("resize",update); update();
 })();
 </script>
 </body>
