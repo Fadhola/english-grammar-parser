@@ -416,6 +416,23 @@
     padding:7px 12px;min-height:34px;display:inline-flex;align-items:center;gap:6px}
   .vindex a:hover{border-color:var(--brand);color:var(--brand)}
   .vindex a.star{background:var(--brand-soft);border-color:#d9d8f7;color:var(--brand);font-weight:600}
+
+  /* ---------- Feature 1: rail fade-in on scroll ---------- */
+  .railnav{opacity:0;pointer-events:none;transition:opacity .35s ease}
+  .railnav.show{opacity:1;pointer-events:auto}
+
+  /* ---------- Feature 2: rail sub-nav expansion ---------- */
+  .railnav .subs{position:absolute;left:17px;top:calc(100% + 2px);width:172px;max-height:0;opacity:0;overflow:hidden;transition:max-height .25s ease,opacity .15s ease;z-index:2}
+  .railnav a.active .subs{max-height:46vh;opacity:1;overflow-y:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);padding:4px 2px}
+  .railnav .sub{display:block;font-family:var(--f-display);font-size:11px;color:var(--ink-soft);text-decoration:none;padding:3px 8px;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .railnav .sub:hover{color:var(--brand);background:var(--brand-soft)}
+
+  /* ---------- Feature 3: scroll reveal ---------- */
+  .reveal{opacity:0;transform:translateY(14px)}
+  .reveal.in{opacity:1;transform:none;transition:opacity .5s ease,transform .5s ease}
+  @media(prefers-reduced-motion:reduce){
+    .reveal{opacity:1!important;transform:none!important;transition:none!important}
+  }
 </style>
 </head>
 <body>
@@ -424,12 +441,12 @@
 <div class="readbar" aria-hidden="true"><i id="readbarFill"></i></div>
 
 <nav class="railnav" id="railnav" aria-label="Peta bagian">
-  <a href="#part-of-speech" data-sec="part-of-speech"><span class="d"></span><span class="lbl">01 · Part of Speech</span></a>
-  <a href="#struktur" data-sec="struktur"><span class="d"></span><span class="lbl">02 · Struktur</span></a>
-  <a href="#frasa" data-sec="frasa"><span class="d"></span><span class="lbl">03 · Frasa</span></a>
-  <a href="#klausa" data-sec="klausa"><span class="d"></span><span class="lbl">04 · Klausa</span></a>
-  <a href="#grammar" data-sec="grammar"><span class="d"></span><span class="lbl">05 · Grammar</span></a>
-  <a href="#vocab" data-sec="vocab"><span class="d"></span><span class="lbl">06 · Vocabulary</span></a>
+  <a href="#part-of-speech" data-sec="part-of-speech"><span class="d"></span><span class="lbl">01 · Part of Speech</span><span class="subs"></span></a>
+  <a href="#struktur" data-sec="struktur"><span class="d"></span><span class="lbl">02 · Struktur</span><span class="subs"></span></a>
+  <a href="#frasa" data-sec="frasa"><span class="d"></span><span class="lbl">03 · Frasa</span><span class="subs"></span></a>
+  <a href="#klausa" data-sec="klausa"><span class="d"></span><span class="lbl">04 · Klausa</span><span class="subs"></span></a>
+  <a href="#grammar" data-sec="grammar"><span class="d"></span><span class="lbl">05 · Grammar</span><span class="subs"></span></a>
+  <a href="#vocab" data-sec="vocab"><span class="d"></span><span class="lbl">06 · Vocabulary</span><span class="subs"></span></a>
 </nav>
 
 <header class="top">
@@ -618,7 +635,7 @@
     </div>
 
     <!-- Agreement / pronoun / modal accordions -->
-    <details class="acc" style="--c:var(--pos-noun)">
+    <details class="acc" id="g-agree" style="--c:var(--pos-noun)">
       <summary><span class="mk">5.2</span>Subject–Verb Agreement<span class="ar">›</span></summary>
       <div class="body">
         <p>Verb harus sesuai jumlah subjek. Tunggal (he/she/it) → verb <b>+s/es</b>; jamak (they/we) → tanpa s.</p>
@@ -637,7 +654,7 @@
       </div>
     </details>
 
-    <details class="acc" style="--c:var(--pos-pronoun)">
+    <details class="acc" id="g-pron" style="--c:var(--pos-pronoun)">
       <summary><span class="mk">5.3</span>Pronoun Agreement<span class="ar">›</span></summary>
       <div class="body">
         <p>Pronoun harus cocok dengan antecedent-nya dalam jumlah, gender, dan jenis (subjek/objek).</p>
@@ -650,7 +667,7 @@
       </div>
     </details>
 
-    <details class="acc" style="--c:var(--pos-verb)">
+    <details class="acc" id="g-modal" style="--c:var(--pos-verb)">
       <summary><span class="mk">5.4</span>Modal Verbs<span class="ar">›</span></summary>
       <div class="body">
         <p><b>Definisi:</b> verb bantu yang menambah <em>makna</em> ke verb utama — kemampuan, izin, kewajiban, saran, kemungkinan. Rumus: <span class="formula">S + modal + V1</span> (selalu V1, tanpa "to", tanpa -s).</p>
@@ -751,7 +768,7 @@
     </div>
 
     <!-- Reported speech -->
-    <details class="acc" style="--c:var(--pos-adverb)">
+    <details class="acc" id="g-reported" style="--c:var(--pos-adverb)">
       <summary><span class="mk">5.7</span>Direct & Indirect Speech<span class="ar">›</span></summary>
       <div class="body">
         <p>Direct mengutip persis dalam tanda kutip; indirect melaporkan tanpa kutip, dengan penyesuaian. Tense mundur satu langkah.</p>
@@ -1924,6 +1941,7 @@ const posWrap=document.getElementById("posLessons");
 POS_LESSONS.forEach((l,i)=>{
   const d=document.createElement("details");
   d.className="acc"; d.style.setProperty("--c",`var(--pos-${l.key})`);
+  d.id="pos-"+l.key;
   if(i===0) d.open=true;
   d.innerHTML=`<summary><span class="mk">${String(i+1).padStart(2,"0")}</span>
     ${POS[l.key].label} <span style="font-weight:400;color:var(--ink-soft);font-family:var(--f-body);font-size:15px">· ${POS[l.key].id}</span>
@@ -1957,6 +1975,7 @@ const stWrap=document.getElementById("sentLessons");
 SENT_LESSONS.forEach((l,i)=>{
   const d=document.createElement("details");
   d.className="acc"; d.style.setProperty("--c",l.c);
+  d.id="st-"+i;
   if(i===0) d.open=true;
   d.innerHTML=`<summary><span class="mk">${String(i+1).padStart(2,"0")}</span>
     ${l.title} <span style="font-weight:400;color:var(--ink-soft);font-family:var(--f-body);font-size:15px">· ${l.sub}</span>
@@ -2110,6 +2129,7 @@ const phWrap=document.getElementById("phraseLessons");
 PHRASE_LESSONS.forEach((l,i)=>{
   const d=document.createElement("details");
   d.className="acc"; d.style.setProperty("--c",`var(--pos-${l.key})`);
+  d.id="ph-"+l.key;
   if(i===0) d.open=true;
   d.innerHTML=`<summary><span class="mk">${String(i+1).padStart(2,"0")}</span>
     ${l.title} <span style="font-weight:400;color:var(--ink-soft);font-family:var(--f-body);font-size:15px">· ${l.sub}</span>
@@ -2298,6 +2318,61 @@ updateProgress();
   }
   window.addEventListener("scroll",()=>{ if(!ticking){ requestAnimationFrame(update); ticking=true; } },{passive:true});
   window.addEventListener("resize",update); update();
+})();
+
+/* =================== RAIL FADE (scroll-triggered visibility) =================== */
+(function(){
+  const rail=document.getElementById("railnav");
+  if(!rail) return;
+  let timer=null, hovering=false;
+  rail.addEventListener("mouseenter",()=>{ hovering=true; clearTimeout(timer); });
+  rail.addEventListener("mouseleave",()=>{
+    hovering=false;
+    clearTimeout(timer);
+    timer=setTimeout(()=>rail.classList.remove("show"),1400);
+  });
+  window.addEventListener("scroll",()=>{
+    rail.classList.add("show");
+    clearTimeout(timer);
+    if(!hovering) timer=setTimeout(()=>rail.classList.remove("show"),1400);
+  },{passive:true});
+})();
+
+/* =================== RAIL SUBNAV (expand active section sub-links) =================== */
+(function(){
+  const SUBNAV={
+    "part-of-speech":[["pos-noun","Noun"],["pos-pronoun","Pronoun"],["pos-verb","Verb"],["pos-adjective","Adjective"],["pos-adverb","Adverb"],["pos-preposition","Preposition"],["pos-conjunction","Conjunction"],["pos-interjection","Interjection"],["pos-determiner","Determiner"],["pos-quantifier","Quantifier"]],
+    "struktur":[["st-0","Simple"],["st-1","Compound"],["st-2","Complex"],["st-3","Compound-Complex"]],
+    "frasa":[["ph-noun","Noun phrase"],["ph-verb","Verb phrase"],["ph-preposition","Prepositional"],["ph-adjective","Adjective phrase"],["ph-adverb","Adverbial phrase"]],
+    "klausa":[],
+    "grammar":[["g-tenses","12 Tenses"],["g-agree","S–V Agreement"],["g-pron","Pronoun Agreement"],["g-modal","Modal Verbs"],["g-voice","Active/Passive"],["g-cond","Conditional"],["g-reported","Reported Speech"],["g-there","There is/are"],["g-gerinf","Gerund/Infinitive"],["g-articles","Articles"],["g-relative","Relative Clauses"],["g-prep","Prepositions"],["g-punct","Punctuation"]],
+    "vocab":[["v-bank","Word Bank"],["v-essay","Bedah Essay"],["v-colloc","Collocations"],["v-upgrade","Upgrade Kata"],["v-family","Word Families"],["v-topik","Vocab per Topik"],["v-phrasal","Phrasal Verbs"],["v-linking","Linking Words"],["v-idiom","Idiom"],["v-trend","Tren & Data"],["v-opini","Opini & Linker"],["v-para","Paraphrasing"],["v-express","Expressions"],["v-quiz","Latihan"]]
+  };
+  document.querySelectorAll(".railnav a[data-sec]").forEach(a=>{
+    const sec=a.dataset.sec;
+    const subs=a.querySelector(".subs");
+    if(!subs) return;
+    const items=SUBNAV[sec]||[];
+    subs.innerHTML=items.map(([id,lbl])=>`<a class="sub" href="#${id}">${lbl}</a>`).join("");
+  });
+  // open <details> target before browser scroll
+  document.querySelector(".railnav").addEventListener("click",function(e){
+    const sub=e.target.closest(".sub");
+    if(!sub) return;
+    const id=sub.getAttribute("href").slice(1);
+    const el=document.getElementById(id);
+    if(el&&el.tagName==="DETAILS") el.open=true;
+  });
+})();
+
+/* =================== SCROLL REVEAL (fade + slide-up on enter) =================== */
+(function(){
+  const targets=document.querySelectorAll(".card,details.acc,.quiz");
+  targets.forEach(el=>el.classList.add("reveal"));
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); obs.unobserve(e.target); } });
+  },{threshold:0.08,rootMargin:"0px 0px -8% 0px"});
+  targets.forEach(el=>obs.observe(el));
 })();
 </script>
 </body>
