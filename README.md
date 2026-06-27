@@ -4,8 +4,7 @@ Website frontend interaktif untuk belajar tata bahasa Inggris dari nol. Bongkar 
 
 > **Parse** = membedah kalimat jadi bagian-bagiannya (subjek, verb, objek, klausa). LafleuParser = *si pembedah kalimat*.
 
-**Live:** https://english-grammar-parser-pi.vercel.app
-_(akan jadi `lafleuparser.vercel.app` setelah project di-rename di Vercel)_
+**Live:** https://lafleuparser.vercel.app
 
 ## Fitur
 
