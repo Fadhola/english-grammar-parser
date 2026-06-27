@@ -443,16 +443,17 @@
     width:7px;height:7px;border-radius:50%;background:var(--brand);border:2px solid var(--panel)}
   /* phones: slim dots-only position indicator (no panel/label, no content overlap) */
   @media(max-width:767px){
-    .railnav{left:6px;gap:4px}
+    .railnav{left:6px;gap:4px;opacity:1;pointer-events:auto}  /* always visible + tappable on phones */
     .railnav::before{left:5px}
     .railnav .d{left:2px;width:8px;height:8px}
     .railnav a{width:14px;min-height:22px}
     .railnav a.active .d{box-shadow:0 0 0 3px var(--brand-soft)}
     .railnav .subs{display:none!important}
-    /* show only the active section's label as a pill (auto-updates on scroll) */
+    /* show the active section's label as a pill that opens a sub-section sheet */
     .railnav .lbl{display:none}
-    .railnav a.active .lbl{display:block;opacity:1;left:17px;
-      transform:translateY(-50%) translateX(0);font-size:11px;font-weight:600;padding:3px 9px}
+    .railnav a.active .lbl{display:flex;align-items:center;opacity:1;left:17px;cursor:pointer;
+      transform:translateY(-50%) translateX(0);font-size:11px;font-weight:600;padding:4px 10px}
+    .railnav a.active .lbl::after{content:"›";margin-left:6px;color:var(--brand);font-weight:700;font-size:14px;line-height:1}
   }
 
   /* ---------- Feature 3: scroll reveal ---------- */
@@ -461,6 +462,30 @@
   @media(prefers-reduced-motion:reduce){
     .reveal{opacity:1!important;transform:none!important;transition:none!important}
   }
+
+  /* ---------- Mobile sub-section bottom sheet ---------- */
+  .sheet{position:fixed;inset:0;z-index:120;display:none}
+  .sheet.open{display:block}
+  .sheet-back{position:absolute;inset:0;background:rgba(20,22,30,.45);opacity:0;transition:opacity .25s}
+  .sheet.open .sheet-back{opacity:1}
+  .sheet-panel{position:absolute;left:0;right:0;bottom:0;background:var(--panel);
+    border-radius:20px 20px 0 0;padding:6px 14px calc(14px + env(safe-area-inset-bottom));
+    box-shadow:0 -12px 40px rgba(20,22,30,.25);transform:translateY(102%);
+    transition:transform .3s cubic-bezier(.22,1,.36,1);max-height:74vh;display:flex;flex-direction:column}
+  .sheet.open .sheet-panel{transform:translateY(0)}
+  .sheet-grab{width:40px;height:4px;border-radius:99px;background:var(--line);margin:8px auto 10px;flex:none}
+  .sheet-head{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:2px 4px 10px;border-bottom:1px solid var(--line-soft);flex:none}
+  .sheet-head .eyebrow{margin:0}
+  #sheetTitle{font-family:var(--f-display);font-weight:700;font-size:17px;letter-spacing:-.01em}
+  .sheet-x{border:none;background:var(--brand-soft);color:var(--brand);width:34px;height:34px;
+    border-radius:10px;font-size:15px;cursor:pointer;flex:none;display:flex;align-items:center;justify-content:center}
+  .sheet-list{overflow-y:auto;padding:8px 0 4px;-webkit-overflow-scrolling:touch}
+  .sheet-list a{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-size:14.5px;
+    color:var(--ink);text-decoration:none;padding:12px 12px;border-radius:11px;min-height:46px;line-height:1.3}
+  .sheet-list a .sidx{font-family:var(--f-mono);font-size:11px;color:var(--ink-soft);min-width:20px}
+  .sheet-list a.go{color:var(--brand);font-weight:600;background:var(--brand-soft);margin-bottom:4px}
+  .sheet-list a:active{background:var(--brand-soft);color:var(--brand)}
 </style>
 </head>
 <body>
@@ -1261,6 +1286,18 @@
   <a href="#grammar" data-sec="grammar" aria-label="Grammar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><path d="M9 9h6M9 13h6M9 17h3" stroke-linecap="round"/></svg>Grammar</a>
   <a href="#vocab" data-sec="vocab" aria-label="Vocabulary"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a1 1 0 0 1 1-1h6v16H5a1 1 0 0 1-1-1zM20 5a1 1 0 0 0-1-1h-6v16h6a1 1 0 0 0 1-1z" stroke-linejoin="round"/></svg>Vocab</a>
 </nav>
+
+<div class="sheet" id="tocSheet" aria-hidden="true">
+  <div class="sheet-back"></div>
+  <div class="sheet-panel" role="dialog" aria-label="Daftar sub-bagian" aria-modal="true">
+    <span class="sheet-grab"></span>
+    <div class="sheet-head">
+      <div><p class="eyebrow" id="sheetEyebrow">Bagian</p><div id="sheetTitle"></div></div>
+      <button class="sheet-x" id="sheetClose" aria-label="Tutup">✕</button>
+    </div>
+    <div class="sheet-list" id="sheetList"></div>
+  </div>
+</div>
 
 <div class="toast" id="toast"></div>
 
@@ -2419,6 +2456,56 @@ updateProgress();
     entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); obs.unobserve(e.target); } });
   },{threshold:0.08,rootMargin:"0px 0px -8% 0px"});
   targets.forEach(el=>obs.observe(el));
+})();
+
+/* =================== MOBILE SUB-SECTION SHEET =================== */
+(function(){
+  const sheet=document.getElementById("tocSheet"); if(!sheet) return;
+  const back=sheet.querySelector(".sheet-back");
+  const titleEl=document.getElementById("sheetTitle");
+  const eyebrowEl=document.getElementById("sheetEyebrow");
+  const listEl=document.getElementById("sheetList");
+  const closeBtn=document.getElementById("sheetClose");
+  const rail=document.querySelector(".railnav");
+  const isMobile=()=>window.matchMedia("(max-width:767px)").matches;
+
+  function open(a){
+    const raw=(a.querySelector(".lbl")?.textContent||"").trim();
+    const m=raw.match(/^(\d+)\s*·\s*(.+)$/);
+    eyebrowEl.textContent= m?("Bagian "+m[1]):"Bagian";
+    titleEl.textContent= m?m[2]:raw;
+    const rows=[`<a class="go" href="${a.getAttribute("href")}" data-go>↑ Buka bagian ${m?m[2]:raw}</a>`];
+    a.querySelectorAll(".sub").forEach((s,i)=>{
+      rows.push(`<a href="#${s.dataset.id}"><span class="sidx">${String(i+1).padStart(2,"0")}</span>${s.textContent}</a>`);
+    });
+    listEl.innerHTML=rows.join("");
+    listEl.scrollTop=0;
+    sheet.classList.add("open"); sheet.setAttribute("aria-hidden","false");
+    document.body.style.overflow="hidden";
+  }
+  function close(){
+    sheet.classList.remove("open"); sheet.setAttribute("aria-hidden","true");
+    document.body.style.overflow="";
+  }
+  // intercept rail taps on mobile -> open sheet (instead of jumping)
+  if(rail) rail.addEventListener("click",function(e){
+    if(!isMobile()) return;
+    const a=e.target.closest("a[data-sec]");
+    if(!a) return;
+    e.preventDefault(); e.stopPropagation();
+    open(a);
+  });
+  // sheet link tap -> open accordion target, then navigate + close
+  listEl.addEventListener("click",function(e){
+    const a=e.target.closest("a"); if(!a) return;
+    const id=a.getAttribute("href").slice(1);
+    const el=document.getElementById(id);
+    if(el&&el.tagName==="DETAILS") el.open=true;
+    close(); // hash navigation proceeds (smooth scroll)
+  });
+  back.addEventListener("click",close);
+  closeBtn.addEventListener("click",close);
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&sheet.classList.contains("open")) close(); });
 })();
 </script>
 </body>
