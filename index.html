@@ -4,6 +4,10 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Parser — Belajar Tata Bahasa Inggris</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="apple-touch-icon" href="/favicon.svg" />
+<meta name="theme-color" content="#1b1d26" />
+<meta name="description" content="Belajar tata bahasa Inggris interaktif — bongkar tiap kalimat, lihat peran tiap kata, latihan, dan word bank TOEFL/IELTS." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -638,7 +642,7 @@
       <div class="body">
         <p>Pronoun harus cocok dengan antecedent-nya dalam jumlah, gender, dan jenis (subjek/objek).</p>
         <ul>
-          <li class="ex">Fadhola finished <b>his</b> project. (tunggal laki-laki)</li>
+          <li class="ex">Lafleur finished <b>his</b> project. (tunggal laki-laki)</li>
           <li class="ex">The students submitted <b>their</b> reports. (jamak)</li>
         </ul>
         <p><b>Subjek vs objek:</b> ✓ <span class="ex">She and I went</span> (bukan "Her and me"); ✓ <span class="ex">They invited her and me</span> (bukan "she and I").</p>
@@ -841,7 +845,7 @@
             <tr><td>where / when</td><td>tempat / waktu</td><td class="ex">the office <b>where I work</b></td></tr>
           </tbody>
         </table>
-        <blockquote><b>Defining vs Non-defining:</b> <em>Defining</em> (info wajib, tanpa koma): <span class="ex">The student who studied passed.</span> <em>Non-defining</em> (info tambahan, pakai koma, tak boleh "that"): <span class="ex">Fadhola, <b>who is from Jakarta,</b> codes in Python.</span></blockquote>
+        <blockquote><b>Defining vs Non-defining:</b> <em>Defining</em> (info wajib, tanpa koma): <span class="ex">The student who studied passed.</span> <em>Non-defining</em> (info tambahan, pakai koma, tak boleh "that"): <span class="ex">Lafleur, <b>who is from Jakarta,</b> codes in Python.</span></blockquote>
       </div>
     </details>
 
@@ -870,7 +874,7 @@
             <tr><td><b>, (koma)</b></td><td>sebelum FANBOYS di compound; sesudah dependent clause di depan; pisah daftar</td><td class="ex">When I finished, I left.</td></tr>
             <tr><td><b>; (titik koma)</b></td><td>sambung 2 kalimat utuh tanpa penghubung</td><td class="ex">She prepared well; she got the job.</td></tr>
             <tr><td><b>: (titik dua)</b></td><td>memperkenalkan daftar/penjelasan</td><td class="ex">I need three things: focus, time, coffee.</td></tr>
-            <tr><td><b>' (apostrof)</b></td><td>kepemilikan & singkatan</td><td class="ex">Fadhola's laptop · it's (= it is)</td></tr>
+            <tr><td><b>' (apostrof)</b></td><td>kepemilikan & singkatan</td><td class="ex">Lafleur's laptop · it's (= it is)</td></tr>
           </tbody>
         </table>
         <blockquote class="warn"><b>its vs it's:</b> <em>its</em> = kepunyaan (no apostrof). <em>it's</em> = it is / it has. · <b>Comma splice</b> ❌: "I came, I saw" → pakai titik koma / FANBOYS / titik.</blockquote>
@@ -1233,7 +1237,7 @@ const POS = {
 // Hero parser sentences: [word, posKeyOrNull]
 const SENTENCES = [
   {name:"Kalimat Sederhana", tokens:[
-    ["Fadhola","noun"],["confidently","adverb"],["built","verb"],["a","determiner"],["scalable","adjective"],["system","noun"],[".",null]
+    ["Lafleur","noun"],["confidently","adverb"],["built","verb"],["a","determiner"],["scalable","adjective"],["system","noun"],[".",null]
   ]},
   {name:"Dengan Preposisi", tokens:[
     ["The","determiner"],["talented","adjective"],["engineer","noun"],["works","verb"],["at","preposition"],["a","determiner"],["startup","noun"],["in","preposition"],["Jakarta","noun"],[".",null]
@@ -1252,7 +1256,7 @@ const POS_LESSONS = [
     <h4>Jenis-jenis Noun</h4>
     <table><thead><tr><th>Jenis</th><th>Penjelasan</th><th>Contoh</th></tr></thead><tbody>
     <tr><td><b>Common noun</b></td><td>Benda umum (huruf kecil)</td><td class="ex">dog, city, teacher</td></tr>
-    <tr><td><b>Proper noun</b></td><td>Nama khusus (huruf besar)</td><td class="ex">Jakarta, Fadhola, Monday</td></tr>
+    <tr><td><b>Proper noun</b></td><td>Nama khusus (huruf besar)</td><td class="ex">Jakarta, Lafleur, Monday</td></tr>
     <tr><td><b>Concrete noun</b></td><td>Bisa diindra (dilihat/disentuh)</td><td class="ex">table, water, music</td></tr>
     <tr><td><b>Abstract noun</b></td><td>Konsep yang tak bisa disentuh</td><td class="ex">freedom, love, beauty</td></tr>
     <tr><td><b>Countable noun</b></td><td>Bisa dihitung</td><td class="ex">book → books</td></tr>
@@ -1288,7 +1292,7 @@ const POS_LESSONS = [
     <p><b>Tips membedakan noun:</b> bisa diberi the/a/an ("the decision" ✓) · bisa jadi subjek atau objek · sering diakhiri sufiks noun (-tion, -ness, -ment, dll.).</p>`},
 
   {key:"pronoun", body:`<p><b>Definisi:</b> kata yang menggantikan noun supaya tidak diulang-ulang.</p>
-    <blockquote>Tanpa pronoun: <span class="ex">"Fadhola opened Fadhola's laptop because Fadhola needed Fadhola's notes."</span><br>Dengan pronoun: <span class="ex">"Fadhola opened <b>his</b> laptop because <b>he</b> needed <b>his</b> notes."</span> — jauh lebih natural.</blockquote>
+    <blockquote>Tanpa pronoun: <span class="ex">"Lafleur opened Lafleur's laptop because Lafleur needed Lafleur's notes."</span><br>Dengan pronoun: <span class="ex">"Lafleur opened <b>his</b> laptop because <b>he</b> needed <b>his</b> notes."</span> — jauh lebih natural.</blockquote>
     <h4>Jenis-jenis Pronoun</h4>
     <table><thead><tr><th>Jenis</th><th>Fungsi</th><th>Contoh</th></tr></thead><tbody>
     <tr><td><b>Personal (subjek)</b></td><td>Pelaku</td><td class="ex">I, you, he, she, it, we, they</td></tr>
@@ -1543,10 +1547,10 @@ const SENT_LESSONS = [
 /* token data for annotated examples mounted elsewhere */
 const ANN = {
   anatomy:[
-    [["Fadhola","subj"],["confidently","mod"],["built","verb"],["a scalable system","obj"],[".",null]],
+    [["Lafleur","subj"],["confidently","mod"],["built","verb"],["a scalable system","obj"],[".",null]],
     [["The interview","subj"],["was","verb"],["difficult","comp"],[".",null]]
   ],
-  indep:[["Fadhola","subj"],["got","verb"],["the job","obj"],[".",null]],
+  indep:[["Lafleur","subj"],["got","verb"],["the job","obj"],[".",null]],
   dep:[["because","conj"],["he","subj"],["prepared","verb"],["well","mod"]],
   whyDep:[
     {cap:"Berdiri sendiri ✓ (independent)", t:[["He","subj"],["prepared","verb"],["well","mod"],[".",null]]},
@@ -1559,7 +1563,7 @@ const ANN = {
   ]
 };
 
-/* essay breakdown (from Fadhola's essay) */
+/* essay breakdown (from Lafleur's essay) */
 const ESSAY = [
   {you:"…when i see people is unheard so their voice are not delivered well…",
    up:"…when people feel <b>unheard</b> — when their <b>point doesn't get across</b> to the person they're talking to.",
@@ -1816,7 +1820,7 @@ const Q_POS = [
   {q:`She built a <b>scalable</b> system.`, a:"adjective", why:`"scalable" menerangkan noun "system" (seperti apa?) → adjective.`},
   {q:`He runs <b>quickly</b> every morning.`, a:"adverb", why:`"quickly" menerangkan verb "runs" (bagaimana?) → adverb. Akhiran -ly dari adjective.`},
   {q:`The book is <b>on</b> the table.`, a:"preposition", why:`"on" menunjukkan hubungan tempat dan diikuti noun "the table" → preposition.`},
-  {q:`Fadhola got the job <b>because</b> he prepared.`, a:"conjunction", why:`"because" menghubungkan dua klausa (subordinating) → conjunction.`},
+  {q:`Lafleur got the job <b>because</b> he prepared.`, a:"conjunction", why:`"because" menghubungkan dua klausa (subordinating) → conjunction.`},
   {q:`<b>Freedom</b> is worth fighting for.`, a:"noun", why:`Abstract noun (dari adjective "free" + -dom). Bisa jadi subjek → noun.`},
   {q:`<b>She</b> works at a startup.`, a:"pronoun", why:`Menggantikan nama orang sebagai subjek → personal pronoun.`},
   {q:`The team <b>launched</b> the product.`, a:"verb", why:`Aksi yang dilakukan subjek "team" → verb (action).`},
